@@ -1,0 +1,44 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/hotspot/hotspot",
+    "pages/ai-create/ai-create",
+    "pages/classify/classify",
+    "pages/my/my"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "Audiora",
+    "navigationBarBackgroundColor": "#6200EA",
+    "backgroundColor": "#F5F5F5"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#6200EA",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "数字人",
+        "iconPath": "static/ai_person.png"
+      },
+      {
+        "pagePath": "pages/hotspot/hotspot",
+        "text": "热点",
+        "iconPath": "static/hotpoint.png"
+      },
+      {
+        "pagePath": "pages/ai-create/ai-create",
+        "text": "AI创作",
+        "iconPath": "/static/ai_create.png"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "text": "我的",
+        "iconPath": "static/my.png"
+      }
+    ]
+  },
+  "usingComponents": {}
+}
