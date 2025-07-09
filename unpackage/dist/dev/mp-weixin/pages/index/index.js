@@ -1,23 +1,29 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const utils_navigation = require("../../utils/navigation.js");
 const common_assets = require("../../common/assets.js");
 const _sfc_main = {
   data() {
     return {
-      // 不再需要原有的音频播放相关数据
+      swiperList: [
+        "/static/ai_person_background.png",
+        "/static/ai_person_background.png",
+        "/static/ai_person_background.png"
+      ]
     };
   },
   onLoad() {
+    common_vendor.index.__f__("log", "at pages/index/index.vue:116", "页面加载完成");
   },
   methods: {
+    onImageError(e) {
+      common_vendor.index.__f__("error", "at pages/index/index.vue:120", "图片加载失败:", e);
+    },
+    onImageLoad(e) {
+      common_vendor.index.__f__("log", "at pages/index/index.vue:123", "图片加载成功:", e);
+    },
     goToFunction(type) {
       switch (type) {
-        case "video":
-          this.createAvatar();
-          break;
-        case "voice":
-          this.createVoice();
-          break;
         case "scene":
           this.processMaterial();
           break;
@@ -26,12 +32,16 @@ const _sfc_main = {
           break;
       }
     },
-    createAvatar() {
-      common_vendor.index.showToast({
-        title: "开始创建人物形象",
-        icon: "none"
-      });
+    /* 创建人物形象*/
+    gotoavatar() {
+      utils_navigation.Navigation.goToAvatar();
     },
+    // createAvatar() {
+    // 	uni.showToast({
+    // 		title: '开始创建人物形象',
+    // 		icon: 'none'
+    // 	});
+    // },
     createVoice() {
       common_vendor.index.showToast({
         title: "开始创建声音形象",
@@ -76,27 +86,29 @@ const _sfc_main = {
         }
       });
     },
-    startCreate() {
-      common_vendor.index.showActionSheet({
-        itemList: ["创建人物形象", "创建声音形象", "素材处理", "生成数字人"],
-        success: (res) => {
-          const types = ["video", "voice", "scene", "subtitle"];
-          this.goToFunction(types[res.tapIndex]);
-        }
-      });
+    goToVoice() {
+      utils_navigation.Navigation.goToVoice();
     }
   }
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_vendor.o(($event) => $options.goToFunction("video")),
-    b: common_vendor.o(($event) => $options.goToFunction("voice")),
-    c: common_vendor.o(($event) => $options.goToFunction("scene")),
-    d: common_vendor.o(($event) => $options.goToFunction("subtitle")),
-    e: common_assets._imports_0,
-    f: common_vendor.o((...args) => $options.playVideo && $options.playVideo(...args)),
-    g: common_vendor.o((...args) => $options.downloadVideo && $options.downloadVideo(...args)),
-    h: common_vendor.o((...args) => $options.deleteVideo && $options.deleteVideo(...args))
+    a: common_vendor.f($data.swiperList, (item, index, i0) => {
+      return {
+        a: item,
+        b: common_vendor.o((...args) => $options.onImageError && $options.onImageError(...args), index),
+        c: common_vendor.o((...args) => $options.onImageLoad && $options.onImageLoad(...args), index),
+        d: index
+      };
+    }),
+    b: common_vendor.o((...args) => _ctx.goToAvatar && _ctx.goToAvatar(...args)),
+    c: common_vendor.o((...args) => $options.goToVoice && $options.goToVoice(...args)),
+    d: common_vendor.o(($event) => $options.goToFunction("scene")),
+    e: common_vendor.o(($event) => $options.goToFunction("subtitle")),
+    f: common_assets._imports_0,
+    g: common_vendor.o((...args) => $options.playVideo && $options.playVideo(...args)),
+    h: common_vendor.o((...args) => $options.downloadVideo && $options.downloadVideo(...args)),
+    i: common_vendor.o((...args) => $options.deleteVideo && $options.deleteVideo(...args))
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-1cf27b2a"]]);

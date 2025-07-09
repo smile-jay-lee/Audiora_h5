@@ -3,8 +3,9 @@
     "pages/index/index",
     "pages/hotspot/hotspot",
     "pages/ai-create/ai-create",
-    "pages/classify/classify",
-    "pages/my/my"
+    "pages/my/my",
+    "pages/avatar/avatar",
+    "pages/voice/voice"
   ],
   "window": {
     "navigationBarTextStyle": "black",

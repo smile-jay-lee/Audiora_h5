@@ -5,8 +5,9 @@ if (!Math) {
   "./pages/index/index.js";
   "./pages/hotspot/hotspot.js";
   "./pages/ai-create/ai-create.js";
-  "./pages/classify/classify.js";
   "./pages/my/my.js";
+  "./pages/avatar/avatar.js";
+  "./pages/voice/voice.js";
 }
 const _sfc_main = {
   onLaunch: function() {
@@ -21,6 +22,7 @@ const _sfc_main = {
 };
 function createApp() {
   const app = common_vendor.createSSRApp(_sfc_main);
+  app.use(common_vendor.uvUI);
   return {
     app
   };

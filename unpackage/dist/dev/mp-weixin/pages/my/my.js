@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const utils_navigation = require("../../utils/navigation.js");
 const common_assets = require("../../common/assets.js");
 const _sfc_main = {
   data() {
@@ -23,7 +24,7 @@ const _sfc_main = {
   },
   methods: {
     loadUserInfo() {
-      common_vendor.index.__f__("log", "at pages/my/my.vue:162", "加载用户信息");
+      common_vendor.index.__f__("log", "at pages/my/my.vue:179", "加载用户信息");
     },
     editProfile() {
       common_vendor.index.showToast({
@@ -49,12 +50,12 @@ const _sfc_main = {
         icon: "none"
       });
     },
-    goToHistory() {
-      common_vendor.index.showToast({
-        title: "查看播放历史",
-        icon: "none"
-      });
-    },
+    // goToHistory() {
+    // 	uni.showToast({
+    // 		title: '查看播放历史',
+    // 		icon: 'none'
+    // 	});
+    // },
     goToDownloads() {
       common_vendor.index.showToast({
         title: "下载管理",
@@ -150,6 +151,9 @@ Audiora是一款专业的音频播放应用，为您提供优质的听觉体验�
           icon: "success"
         });
       }, 1500);
+    },
+    gotoavatar() {
+      utils_navigation.Navigation.goToAvatar();
     }
   }
 };
@@ -160,24 +164,20 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     c: common_vendor.t($data.userInfo.nickname),
     d: common_vendor.t($data.userInfo.userId),
     e: common_vendor.t($data.userInfo.joinDate),
-    f: common_vendor.t($data.userInfo.following),
-    g: common_vendor.o((...args) => $options.goToFollowing && $options.goToFollowing(...args)),
-    h: common_vendor.t($data.userInfo.followers),
-    i: common_vendor.o((...args) => $options.goToFollowers && $options.goToFollowers(...args)),
-    j: common_vendor.t($data.userInfo.favorites),
-    k: common_vendor.o((...args) => $options.goToFavorites && $options.goToFavorites(...args)),
-    l: common_vendor.o((...args) => $options.goToHistory && $options.goToHistory(...args)),
-    m: common_vendor.t($data.downloadCount),
-    n: common_vendor.o((...args) => $options.goToDownloads && $options.goToDownloads(...args)),
-    o: common_vendor.o((...args) => $options.goToSubscriptions && $options.goToSubscriptions(...args)),
-    p: common_vendor.o((...args) => $options.showLogoutConfirm && $options.showLogoutConfirm(...args)),
-    q: $data.showLogoutModal
+    f: common_vendor.o((...args) => $options.gotoavatar && $options.gotoavatar(...args)),
+    g: common_vendor.o((...args) => $options.goToDownloads && $options.goToDownloads(...args)),
+    h: common_vendor.o((...args) => $options.goToSubscriptions && $options.goToSubscriptions(...args)),
+    i: common_vendor.o((...args) => $options.goToSubscriptions && $options.goToSubscriptions(...args)),
+    j: common_vendor.o((...args) => $options.goToSubscriptions && $options.goToSubscriptions(...args)),
+    k: common_vendor.o((...args) => $options.goToSubscriptions && $options.goToSubscriptions(...args)),
+    l: common_vendor.o((...args) => $options.showLogoutConfirm && $options.showLogoutConfirm(...args)),
+    m: $data.showLogoutModal
   }, $data.showLogoutModal ? {
-    r: common_vendor.o((...args) => $options.hideLogoutConfirm && $options.hideLogoutConfirm(...args)),
-    s: common_vendor.o((...args) => $options.logout && $options.logout(...args)),
-    t: common_vendor.o(() => {
+    n: common_vendor.o((...args) => $options.hideLogoutConfirm && $options.hideLogoutConfirm(...args)),
+    o: common_vendor.o((...args) => $options.logout && $options.logout(...args)),
+    p: common_vendor.o(() => {
     }),
-    v: common_vendor.o((...args) => $options.hideLogoutConfirm && $options.hideLogoutConfirm(...args))
+    q: common_vendor.o((...args) => $options.hideLogoutConfirm && $options.hideLogoutConfirm(...args))
   } : {});
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render]]);

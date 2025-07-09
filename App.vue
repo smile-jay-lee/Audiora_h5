@@ -12,6 +12,10 @@
 	}
 </script>
 
+<style lang="scss">
+	@import '@climblee/uv-ui/index.scss';
+</style>
+
 <style>
 	/*每个页面公共css */
 	page {
@@ -19,7 +23,7 @@
 	}
 	
 	/* 全局字体设置 */
-	* {
+	view, text, button, input, textarea {
 		box-sizing: border-box;
 	}
 	

@@ -1,8 +1,15 @@
 {
-  "hash": "77a34622",
+  "hash": "1a021c58",
   "configHash": "655c1859",
-  "lockfileHash": "e3b0c442",
-  "browserHash": "881dab91",
-  "optimized": {},
+  "lockfileHash": "5f0c7117",
+  "browserHash": "c227ef1c",
+  "optimized": {
+    "@climblee/uv-ui": {
+      "src": "../../../../../node_modules/@climblee/uv-ui/index.js",
+      "file": "@climblee_uv-ui.js",
+      "fileHash": "e177a024",
+      "needsInterop": false
+    }
+  },
   "chunks": {}
 }

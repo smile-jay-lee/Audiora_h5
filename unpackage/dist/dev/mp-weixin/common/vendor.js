@@ -25,22 +25,22 @@ const remove = (arr, el) => {
 };
 const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
 const hasOwn = (val, key) => hasOwnProperty$1.call(val, key);
-const isArray = Array.isArray;
+const isArray$1 = Array.isArray;
 const isMap = (val) => toTypeString(val) === "[object Map]";
 const isSet = (val) => toTypeString(val) === "[object Set]";
 const isFunction = (val) => typeof val === "function";
 const isString = (val) => typeof val === "string";
 const isSymbol = (val) => typeof val === "symbol";
-const isObject = (val) => val !== null && typeof val === "object";
+const isObject$1 = (val) => val !== null && typeof val === "object";
 const isPromise = (val) => {
-  return (isObject(val) || isFunction(val)) && isFunction(val.then) && isFunction(val.catch);
+  return (isObject$1(val) || isFunction(val)) && isFunction(val.then) && isFunction(val.catch);
 };
 const objectToString = Object.prototype.toString;
 const toTypeString = (value) => objectToString.call(value);
 const toRawType = (value) => {
   return toTypeString(value).slice(8, -1);
 };
-const isPlainObject = (val) => toTypeString(val) === "[object Object]";
+const isPlainObject$1 = (val) => toTypeString(val) === "[object Object]";
 const isIntegerKey = (key) => isString(key) && key !== "NaN" && key[0] !== "-" && "" + parseInt(key, 10) === key;
 const isReservedProp = /* @__PURE__ */ makeMap(
   // the leading comma is intentional so empty string "" is also included
@@ -89,7 +89,7 @@ const looseToNumber = (val) => {
   return isNaN(n) ? val : n;
 };
 const toDisplayString = (val) => {
-  return isString(val) ? val : val == null ? "" : isArray(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
+  return isString(val) ? val : val == null ? "" : isArray$1(val) || isObject$1(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
 };
 const replacer = (_key, val) => {
   if (val && val.__v_isRef) {
@@ -110,7 +110,7 @@ const replacer = (_key, val) => {
     };
   } else if (isSymbol(val)) {
     return stringifySymbol(val);
-  } else if (isObject(val) && !isArray(val) && !isPlainObject(val)) {
+  } else if (isObject$1(val) && !isArray$1(val) && !isPlainObject$1(val)) {
     return String(val);
   }
   return val;
@@ -236,7 +236,7 @@ function getValueByDataPath(obj, path) {
 }
 function sortObject(obj) {
   let sortObj = {};
-  if (isPlainObject(obj)) {
+  if (isPlainObject$1(obj)) {
     Object.keys(obj).sort().forEach((key) => {
       const _key = key;
       sortObj[_key] = obj[_key];
@@ -248,13 +248,13 @@ const customizeRE = /:/g;
 function customizeEvent(str) {
   return camelize(str.replace(customizeRE, "-"));
 }
-const encode = encodeURIComponent;
-function stringifyQuery(obj, encodeStr = encode) {
+const encode$1 = encodeURIComponent;
+function stringifyQuery(obj, encodeStr = encode$1) {
   const res = obj ? Object.keys(obj).map((key) => {
     let val = obj[key];
     if (typeof val === void 0 || val === null) {
       val = "";
-    } else if (isPlainObject(val)) {
+    } else if (isPlainObject$1(val)) {
       val = JSON.stringify(val);
     }
     return encodeStr(key) + "=" + encodeStr(val);
@@ -678,7 +678,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
   let deps = [];
   if (type === "clear") {
     deps = [...depsMap.values()];
-  } else if (key === "length" && isArray(target)) {
+  } else if (key === "length" && isArray$1(target)) {
     const newLength = Number(newValue);
     depsMap.forEach((dep, key2) => {
       if (key2 === "length" || !isSymbol(key2) && key2 >= newLength) {
@@ -691,7 +691,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
     }
     switch (type) {
       case "add":
-        if (!isArray(target)) {
+        if (!isArray$1(target)) {
           deps.push(depsMap.get(ITERATE_KEY));
           if (isMap(target)) {
             deps.push(depsMap.get(MAP_KEY_ITERATE_KEY));
@@ -701,7 +701,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
         }
         break;
       case "delete":
-        if (!isArray(target)) {
+        if (!isArray$1(target)) {
           deps.push(depsMap.get(ITERATE_KEY));
           if (isMap(target)) {
             deps.push(depsMap.get(MAP_KEY_ITERATE_KEY));
@@ -793,7 +793,7 @@ class BaseReactiveHandler {
       }
       return;
     }
-    const targetIsArray = isArray(target);
+    const targetIsArray = isArray$1(target);
     if (!isReadonly2) {
       if (targetIsArray && hasOwn(arrayInstrumentations, key)) {
         return Reflect.get(arrayInstrumentations, key, receiver);
@@ -815,7 +815,7 @@ class BaseReactiveHandler {
     if (isRef(res)) {
       return targetIsArray && isIntegerKey(key) ? res : res.value;
     }
-    if (isObject(res)) {
+    if (isObject$1(res)) {
       return isReadonly2 ? readonly(res) : reactive(res);
     }
     return res;
@@ -833,7 +833,7 @@ class MutableReactiveHandler extends BaseReactiveHandler {
         oldValue = toRaw(oldValue);
         value = toRaw(value);
       }
-      if (!isArray(target) && isRef(oldValue) && !isRef(value)) {
+      if (!isArray$1(target) && isRef(oldValue) && !isRef(value)) {
         if (isOldValueReadonly) {
           return false;
         } else {
@@ -842,7 +842,7 @@ class MutableReactiveHandler extends BaseReactiveHandler {
         }
       }
     }
-    const hadKey = isArray(target) && isIntegerKey(key) ? Number(key) < target.length : hasOwn(target, key);
+    const hadKey = isArray$1(target) && isIntegerKey(key) ? Number(key) < target.length : hasOwn(target, key);
     const result = Reflect.set(target, key, value, receiver);
     if (target === toRaw(receiver)) {
       if (!hadKey) {
@@ -873,7 +873,7 @@ class MutableReactiveHandler extends BaseReactiveHandler {
     track(
       target,
       "iterate",
-      isArray(target) ? "length" : ITERATE_KEY
+      isArray$1(target) ? "length" : ITERATE_KEY
     );
     return Reflect.ownKeys(target);
   }
@@ -1005,7 +1005,7 @@ function clear() {
   return result;
 }
 function createForEach(isReadonly2, isShallow2) {
-  return function forEach(callback, thisArg) {
+  return function forEach3(callback, thisArg) {
     const observed = this;
     const target = observed["__v_raw"];
     const rawTarget = toRaw(target);
@@ -1247,7 +1247,7 @@ function shallowReadonly(target) {
   );
 }
 function createReactiveObject(target, isReadonly2, baseHandlers, collectionHandlers, proxyMap) {
-  if (!isObject(target)) {
+  if (!isObject$1(target)) {
     {
       warn$2(`value cannot be made reactive: ${String(target)}`);
     }
@@ -1293,8 +1293,8 @@ function markRaw(value) {
   }
   return value;
 }
-const toReactive = (value) => isObject(value) ? reactive(value) : value;
-const toReadonly = (value) => isObject(value) ? readonly(value) : value;
+const toReactive = (value) => isObject$1(value) ? reactive(value) : value;
+const toReadonly = (value) => isObject$1(value) ? readonly(value) : value;
 const COMPUTED_SIDE_EFFECT_WARN = `Computed is still dirty after getter evaluation, likely because a computed is mutating its own dependency in its getter. State mutations in computed getters should be avoided.  Check the docs for more details: https://vuejs.org/guide/essentials/computed.html#getters-should-be-side-effect-free`;
 class ComputedRefImpl {
   constructor(getter, _setter, isReadonly2, isSSR) {
@@ -1714,7 +1714,7 @@ function invalidateJob(job) {
   }
 }
 function queuePostFlushCb(cb) {
-  if (!isArray(cb)) {
+  if (!isArray$1(cb)) {
     if (!activePostFlushCbs || !activePostFlushCbs.includes(
       cb,
       cb.allowRecurse ? postFlushIndex + 1 : postFlushIndex
@@ -1963,11 +1963,11 @@ function emit(instance, event, ...rawArgs) {
   const modelArg = isModelListener2 && event.slice(7);
   if (modelArg && modelArg in props) {
     const modifiersKey = `${modelArg === "modelValue" ? "model" : modelArg}Modifiers`;
-    const { number, trim } = props[modifiersKey] || EMPTY_OBJ;
-    if (trim) {
+    const { number: number2, trim: trim2 } = props[modifiersKey] || EMPTY_OBJ;
+    if (trim2) {
       args = rawArgs.map((a) => isString(a) ? a.trim() : a);
     }
-    if (number) {
+    if (number2) {
       args = rawArgs.map(looseToNumber);
     }
   }
@@ -2045,17 +2045,17 @@ function normalizeEmitsOptions(comp, appContext, asMixin = false) {
     }
   }
   if (!raw && !hasExtends) {
-    if (isObject(comp)) {
+    if (isObject$1(comp)) {
       cache.set(comp, null);
     }
     return null;
   }
-  if (isArray(raw)) {
+  if (isArray$1(raw)) {
     raw.forEach((key) => normalized[key] = null);
   } else {
     extend(normalized, raw);
   }
-  if (isObject(comp)) {
+  if (isObject$1(comp)) {
     cache.set(comp, normalized);
   }
   return normalized;
@@ -2141,7 +2141,7 @@ function doWatch(source, cb, {
   } else if (isReactive(source)) {
     getter = () => reactiveGetter(source);
     forceTrigger = true;
-  } else if (isArray(source)) {
+  } else if (isArray$1(source)) {
     isMultiSource = true;
     forceTrigger = source.some((s2) => isReactive(s2) || isShallow(s2));
     getter = () => source.map((s2) => {
@@ -2275,7 +2275,7 @@ function createPathGetter(ctx, path) {
   };
 }
 function traverse(value, depth, currentDepth = 0, seen) {
-  if (!isObject(value) || value["__v_skip"]) {
+  if (!isObject$1(value) || value["__v_skip"]) {
     return value;
   }
   if (depth && depth > 0) {
@@ -2291,7 +2291,7 @@ function traverse(value, depth, currentDepth = 0, seen) {
   seen.add(value);
   if (isRef(value)) {
     traverse(value.value, depth, currentDepth, seen);
-  } else if (isArray(value)) {
+  } else if (isArray$1(value)) {
     for (let i = 0; i < value.length; i++) {
       traverse(value[i], depth, currentDepth, seen);
     }
@@ -2299,7 +2299,7 @@ function traverse(value, depth, currentDepth = 0, seen) {
     value.forEach((v) => {
       traverse(v, depth, currentDepth, seen);
     });
-  } else if (isPlainObject(value)) {
+  } else if (isPlainObject$1(value)) {
     for (const key in value) {
       traverse(value[key], depth, currentDepth, seen);
     }
@@ -2338,7 +2338,7 @@ function createAppAPI(render, hydrate) {
     if (!isFunction(rootComponent)) {
       rootComponent = extend({}, rootComponent);
     }
-    if (rootProps != null && !isObject(rootProps)) {
+    if (rootProps != null && !isObject$1(rootProps)) {
       warn$1(`root props passed to app.mount() must be an object.`);
       rootProps = null;
     }
@@ -2351,7 +2351,7 @@ function createAppAPI(render, hydrate) {
       _container: null,
       _context: context,
       _instance: null,
-      version,
+      version: version$1,
       get config() {
         return context.config;
       },
@@ -2378,13 +2378,13 @@ function createAppAPI(render, hydrate) {
         }
         return app;
       },
-      mixin(mixin) {
+      mixin(mixin2) {
         {
-          if (!context.mixins.includes(mixin)) {
-            context.mixins.push(mixin);
+          if (!context.mixins.includes(mixin2)) {
+            context.mixins.push(mixin2);
           } else {
             warn$1(
-              "Mixin has already been applied to target app" + (mixin.name ? `: ${mixin.name}` : "")
+              "Mixin has already been applied to target app" + (mixin2.name ? `: ${mixin2.name}` : "")
             );
           }
         }
@@ -2797,7 +2797,7 @@ function exposeSetupStateOnRenderContext(instance) {
   });
 }
 function normalizePropsOrEmits(props) {
-  return isArray(props) ? props.reduce(
+  return isArray$1(props) ? props.reduce(
     (normalized, p2) => (normalized[p2] = null, normalized),
     {}
   ) : props;
@@ -2905,7 +2905,7 @@ function applyOptions$1(instance) {
         `data() returned a Promise - note data() cannot be async; If you intend to perform data fetching before component renders, use async setup() + <Suspense>.`
       );
     }
-    if (!isObject(data)) {
+    if (!isObject$1(data)) {
       warn$1(`data() should return an object.`);
     } else {
       instance.data = reactive(data);
@@ -2974,7 +2974,7 @@ function applyOptions$1(instance) {
     }
   }
   function registerLifecycleHook(register, hook) {
-    if (isArray(hook)) {
+    if (isArray$1(hook)) {
       hook.forEach((_hook) => register(_hook.bind(publicThis)));
     } else if (hook) {
       register(hook.bind(publicThis));
@@ -2992,7 +2992,7 @@ function applyOptions$1(instance) {
   registerLifecycleHook(onBeforeUnmount, beforeUnmount);
   registerLifecycleHook(onUnmounted, unmounted);
   registerLifecycleHook(onServerPrefetch, serverPrefetch);
-  if (isArray(expose)) {
+  if (isArray$1(expose)) {
     if (expose.length) {
       const exposed = instance.exposed || (instance.exposed = {});
       expose.forEach((key) => {
@@ -3020,13 +3020,13 @@ function applyOptions$1(instance) {
   }
 }
 function resolveInjections(injectOptions, ctx, checkDuplicateProperties = NOOP) {
-  if (isArray(injectOptions)) {
+  if (isArray$1(injectOptions)) {
     injectOptions = normalizeInject(injectOptions);
   }
   for (const key in injectOptions) {
     const opt = injectOptions[key];
     let injected;
-    if (isObject(opt)) {
+    if (isObject$1(opt)) {
       if ("default" in opt) {
         injected = inject(
           opt.from || key,
@@ -3056,7 +3056,7 @@ function resolveInjections(injectOptions, ctx, checkDuplicateProperties = NOOP) 
 }
 function callHook$1(hook, instance, type) {
   callWithAsyncErrorHandling(
-    isArray(hook) ? hook.map((h2) => h2.bind(instance.proxy)) : hook.bind(instance.proxy),
+    isArray$1(hook) ? hook.map((h2) => h2.bind(instance.proxy)) : hook.bind(instance.proxy),
     instance,
     type
   );
@@ -3072,8 +3072,8 @@ function createWatcher(raw, ctx, publicThis, key) {
     }
   } else if (isFunction(raw)) {
     watch(getter, raw.bind(publicThis));
-  } else if (isObject(raw)) {
-    if (isArray(raw)) {
+  } else if (isObject$1(raw)) {
+    if (isArray$1(raw)) {
       raw.forEach((r2) => createWatcher(r2, ctx, publicThis, key));
     } else {
       const handler = isFunction(raw.handler) ? raw.handler.bind(publicThis) : ctx[raw.handler];
@@ -3112,7 +3112,7 @@ function resolveMergedOptions(instance) {
     }
     mergeOptions(resolved, base, optionMergeStrategies);
   }
-  if (isObject(base)) {
+  if (isObject$1(base)) {
     cache.set(base, resolved);
   }
   return resolved;
@@ -3188,7 +3188,7 @@ function mergeInject(to, from) {
   return mergeObjectOptions(normalizeInject(to), normalizeInject(from));
 }
 function normalizeInject(raw) {
-  if (isArray(raw)) {
+  if (isArray$1(raw)) {
     const res = {};
     for (let i = 0; i < raw.length; i++) {
       res[raw[i]] = raw[i];
@@ -3205,7 +3205,7 @@ function mergeObjectOptions(to, from) {
 }
 function mergeEmitsOrPropsOptions(to, from) {
   if (to) {
-    if (isArray(to) && isArray(from)) {
+    if (isArray$1(to) && isArray$1(from)) {
       return [.../* @__PURE__ */ new Set([...to, ...from])];
     }
     return extend(
@@ -3455,12 +3455,12 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
     }
   }
   if (!raw && !hasExtends) {
-    if (isObject(comp)) {
+    if (isObject$1(comp)) {
       cache.set(comp, EMPTY_ARR);
     }
     return EMPTY_ARR;
   }
-  if (isArray(raw)) {
+  if (isArray$1(raw)) {
     for (let i = 0; i < raw.length; i++) {
       if (!isString(raw[i])) {
         warn$1(`props must be strings when using array syntax.`, raw[i]);
@@ -3471,14 +3471,14 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
       }
     }
   } else if (raw) {
-    if (!isObject(raw)) {
+    if (!isObject$1(raw)) {
       warn$1(`invalid props options`, raw);
     }
     for (const key in raw) {
       const normalizedKey = camelize(key);
       if (validatePropName(normalizedKey)) {
         const opt = raw[key];
-        const prop = normalized[normalizedKey] = isArray(opt) || isFunction(opt) ? { type: opt } : extend({}, opt);
+        const prop = normalized[normalizedKey] = isArray$1(opt) || isFunction(opt) ? { type: opt } : extend({}, opt);
         if (prop) {
           const booleanIndex = getTypeIndex(Boolean, prop.type);
           const stringIndex = getTypeIndex(String, prop.type);
@@ -3498,7 +3498,7 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
     }
   }
   const res = [normalized, needCastKeys];
-  if (isObject(comp)) {
+  if (isObject$1(comp)) {
     cache.set(comp, res);
   }
   return res;
@@ -3527,7 +3527,7 @@ function isSameType(a, b) {
   return getType$1(a) === getType$1(b);
 }
 function getTypeIndex(type, expectedTypes) {
-  if (isArray(expectedTypes)) {
+  if (isArray$1(expectedTypes)) {
     return expectedTypes.findIndex((t2) => isSameType(t2, type));
   } else if (isFunction(expectedTypes)) {
     return isSameType(expectedTypes, type) ? 0 : -1;
@@ -3561,7 +3561,7 @@ function validateProp$1(name, value, prop, props, isAbsent) {
   }
   if (type != null && type !== true && !skipCheck) {
     let isValid = false;
-    const types = isArray(type) ? type : [type];
+    const types = isArray$1(type) ? type : [type];
     const expectedTypes = [];
     for (let i = 0; i < types.length && !isValid; i++) {
       const { valid, expectedType } = assertType$1(value, types[i]);
@@ -3590,9 +3590,9 @@ function assertType$1(value, type) {
       valid = value instanceof type;
     }
   } else if (expectedType === "Object") {
-    valid = isObject(value);
+    valid = isObject$1(value);
   } else if (expectedType === "Array") {
-    valid = isArray(value);
+    valid = isArray$1(value);
   } else if (expectedType === "null") {
     valid = value === null;
   } else {
@@ -3894,7 +3894,7 @@ function handleSetupResult(instance, setupResult, isSSR) {
     {
       instance.render = setupResult;
     }
-  } else if (isObject(setupResult)) {
+  } else if (isObject$1(setupResult)) {
     if (isVNode(setupResult)) {
       warn$1(
         `setup() should not return VNodes directly - return a render function instead.`
@@ -3977,7 +3977,7 @@ function createSetupContext(instance) {
       if (exposed != null) {
         let exposedType = typeof exposed;
         if (exposedType === "object") {
-          if (isArray(exposed)) {
+          if (isArray$1(exposed)) {
             exposedType = "array";
           } else if (isRef(exposed)) {
             exposedType = "ref";
@@ -4059,7 +4059,7 @@ const computed = (getterOrOptions, debugOptions) => {
   }
   return c2;
 };
-const version = "3.4.21";
+const version$1 = "3.4.21";
 const warn = warn$1;
 function unwrapper(target) {
   return unref(target);
@@ -4220,7 +4220,7 @@ function nextTick(instance, fn) {
     _resolve = resolve2;
   });
 }
-function clone(src, seen) {
+function clone$1(src, seen) {
   src = unwrapper(src);
   const type = typeof src;
   if (type === "object" && src !== null) {
@@ -4228,19 +4228,19 @@ function clone(src, seen) {
     if (typeof copy !== "undefined") {
       return copy;
     }
-    if (isArray(src)) {
+    if (isArray$1(src)) {
       const len = src.length;
       copy = new Array(len);
       seen.set(src, copy);
       for (let i = 0; i < len; i++) {
-        copy[i] = clone(src[i], seen);
+        copy[i] = clone$1(src[i], seen);
       }
     } else {
       copy = {};
       seen.set(src, copy);
       for (const name in src) {
         if (hasOwn(src, name)) {
-          copy[name] = clone(src[name], seen);
+          copy[name] = clone$1(src[name], seen);
         }
       }
     }
@@ -4251,7 +4251,7 @@ function clone(src, seen) {
   }
 }
 function deepCopy(src) {
-  return clone(src, typeof WeakMap !== "undefined" ? /* @__PURE__ */ new WeakMap() : /* @__PURE__ */ new Map());
+  return clone$1(src, typeof WeakMap !== "undefined" ? /* @__PURE__ */ new WeakMap() : /* @__PURE__ */ new Map());
 }
 function getMPInstanceData(instance, keys) {
   const data = instance.data;
@@ -4367,7 +4367,7 @@ function setRef$1(instance, isUnmount = false) {
   if ($templateUniElementRefs && $templateUniElementRefs.length) {
     nextTick(instance, () => {
       $templateUniElementRefs.forEach((templateRef) => {
-        if (isArray(templateRef.v)) {
+        if (isArray$1(templateRef.v)) {
           templateRef.v.forEach((v) => {
             setTemplateRef(templateRef, v, setupState);
           });
@@ -4384,7 +4384,7 @@ function setRef$1(instance, isUnmount = false) {
   }
 }
 function toSkip(value) {
-  if (isObject(value)) {
+  if (isObject$1(value)) {
     markRaw(value);
   }
   return value;
@@ -4413,7 +4413,7 @@ function setTemplateRef({ r: r2, f: f2 }, refValue, setupState) {
         if (!_isRef) {
           return;
         }
-        if (!isArray(r2.value)) {
+        if (!isArray$1(r2.value)) {
           r2.value = [];
         }
         const existing = r2.value;
@@ -4764,7 +4764,7 @@ function createVueApp(rootComponent, rootProps = null) {
     );
     app._instance = instance.$;
     {
-      devtoolsInitApp(app, version);
+      devtoolsInitApp(app, version$1);
     }
     instance.$app = app;
     instance.$createComponent = createComponent2;
@@ -4790,7 +4790,7 @@ function initHooks$1(options, instance, publicThis) {
   Object.keys(options).forEach((name) => {
     if (isUniLifecycleHook(name, options[name], false)) {
       const hooks = options[name];
-      if (isArray(hooks)) {
+      if (isArray$1(hooks)) {
         hooks.forEach((hook) => injectLifecycleHook(name, hook, publicThis, instance));
       } else {
         injectLifecycleHook(name, hooks, publicThis, instance);
@@ -4869,7 +4869,7 @@ function b64DecodeUnicode(str) {
   }).join(""));
 }
 function getCurrentUserInfo() {
-  const token = index.getStorageSync("uni_id_token") || "";
+  const token = index$1.getStorageSync("uni_id_token") || "";
   const tokenArr = token.split(".");
   if (!token || tokenArr.length !== 3) {
     return {
@@ -4882,8 +4882,8 @@ function getCurrentUserInfo() {
   let userInfo;
   try {
     userInfo = JSON.parse(b64DecodeUnicode(tokenArr[1]));
-  } catch (error) {
-    throw new Error("获取当前用户信息出错，详细错误信息为：" + error.message);
+  } catch (error2) {
+    throw new Error("获取当前用户信息出错，详细错误信息为：" + error2.message);
   }
   userInfo.tokenExpired = userInfo.exp * 1e3;
   delete userInfo.exp;
@@ -4918,7 +4918,7 @@ function initApp(app) {
     globalProperties.$callMethod = $callMethod;
   }
   {
-    index.invokeCreateVueAppHook(app);
+    index$1.invokeCreateVueAppHook(app);
   }
 }
 const propsCaches = /* @__PURE__ */ Object.create(null);
@@ -5000,7 +5000,7 @@ function createInvoker(initialValue, instance) {
       setTimeout(invoke);
     } else {
       const res = invoke();
-      if (e2.type === "input" && (isArray(res) || isPromise(res))) {
+      if (e2.type === "input" && (isArray$1(res) || isPromise(res))) {
         return;
       }
       return res;
@@ -5036,16 +5036,16 @@ function patchMPEvent(event, instance) {
       event.detail = typeof event.detail === "object" ? event.detail : {};
       event.detail.markerId = event.markerId;
     }
-    if (isPlainObject(event.detail) && hasOwn(event.detail, "checked") && !hasOwn(event.detail, "value")) {
+    if (isPlainObject$1(event.detail) && hasOwn(event.detail, "checked") && !hasOwn(event.detail, "value")) {
       event.detail.value = event.detail.checked;
     }
-    if (isPlainObject(event.detail)) {
+    if (isPlainObject$1(event.detail)) {
       event.target = extend({}, event.target, event.detail);
     }
   }
 }
 function patchStopImmediatePropagation(e2, value) {
-  if (isArray(value)) {
+  if (isArray$1(value)) {
     const originalStop = e2.stopImmediatePropagation;
     e2.stopImmediatePropagation = () => {
       originalStop && originalStop.call(e2);
@@ -5058,7 +5058,7 @@ function patchStopImmediatePropagation(e2, value) {
 }
 function vFor(source, renderItem) {
   let ret;
-  if (isArray(source) || isString(source)) {
+  if (isArray$1(source) || isString(source)) {
     ret = new Array(source.length);
     for (let i = 0, l = source.length; i < l; i++) {
       ret[i] = renderItem(source[i], i, i);
@@ -5072,7 +5072,7 @@ function vFor(source, renderItem) {
     for (let i = 0; i < source; i++) {
       ret[i] = renderItem(i + 1, i, i);
     }
-  } else if (isObject(source)) {
+  } else if (isObject$1(source)) {
     if (source[Symbol.iterator]) {
       ret = Array.from(source, (item, i) => renderItem(item, i, i));
     } else {
@@ -5125,7 +5125,7 @@ function validateProtocols(name, args, protocol, onFail) {
   if (!protocol) {
     return;
   }
-  if (!isArray(protocol)) {
+  if (!isArray$1(protocol)) {
     return validateProtocol(name, args[0] || /* @__PURE__ */ Object.create(null), protocol, onFail);
   }
   const len = protocol.length;
@@ -5140,7 +5140,7 @@ function validateProtocols(name, args, protocol, onFail) {
   }
 }
 function validateProp(name, value, prop, isAbsent) {
-  if (!isPlainObject(prop)) {
+  if (!isPlainObject$1(prop)) {
     prop = { type: prop };
   }
   const { type, required, validator } = prop;
@@ -5152,7 +5152,7 @@ function validateProp(name, value, prop, isAbsent) {
   }
   if (type != null) {
     let isValid = false;
-    const types = isArray(type) ? type : [type];
+    const types = isArray$1(type) ? type : [type];
     const expectedTypes = [];
     for (let i = 0; i < types.length && !isValid; i++) {
       const { valid, expectedType } = assertType(value, types[i]);
@@ -5178,9 +5178,9 @@ function assertType(value, type) {
       valid = value instanceof type;
     }
   } else if (expectedType === "Object") {
-    valid = isObject(value);
+    valid = isObject$1(value);
   } else if (expectedType === "Array") {
-    valid = isArray(value);
+    valid = isArray$1(value);
   } else {
     {
       valid = value instanceof type;
@@ -5278,7 +5278,7 @@ function normalizeErrMsg(errMsg, name) {
   return name + errMsg.substring(errMsg.indexOf(":fail"));
 }
 function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = {}) {
-  if (!isPlainObject(args)) {
+  if (!isPlainObject$1(args)) {
     args = {};
   }
   const { success, fail, complete } = getApiCallbacks(args);
@@ -5311,15 +5311,15 @@ function wrapperHook(hook, params) {
   };
 }
 function queue(hooks, data, params) {
-  let promise = false;
+  let promise2 = false;
   for (let i = 0; i < hooks.length; i++) {
     const hook = hooks[i];
-    if (promise) {
-      promise = Promise.resolve(wrapperHook(hook, params));
+    if (promise2) {
+      promise2 = Promise.resolve(wrapperHook(hook, params));
     } else {
       const res = hook(data, params);
       if (isPromise(res)) {
-        promise = Promise.resolve(res);
+        promise2 = Promise.resolve(res);
       }
       if (res === false) {
         return {
@@ -5331,7 +5331,7 @@ function queue(hooks, data, params) {
       }
     }
   }
-  return promise || {
+  return promise2 || {
     then(callback) {
       return callback(data);
     },
@@ -5342,7 +5342,7 @@ function queue(hooks, data, params) {
 function wrapperOptions(interceptors2, options = {}) {
   [HOOK_SUCCESS, HOOK_FAIL, HOOK_COMPLETE].forEach((name) => {
     const hooks = interceptors2[name];
-    if (!isArray(hooks)) {
+    if (!isArray$1(hooks)) {
       return;
     }
     const oldCallback = options[name];
@@ -5356,11 +5356,11 @@ function wrapperOptions(interceptors2, options = {}) {
 }
 function wrapperReturnValue(method, returnValue) {
   const returnValueHooks = [];
-  if (isArray(globalInterceptors.returnValue)) {
+  if (isArray$1(globalInterceptors.returnValue)) {
     returnValueHooks.push(...globalInterceptors.returnValue);
   }
   const interceptor = scopedInterceptors[method];
-  if (interceptor && isArray(interceptor.returnValue)) {
+  if (interceptor && isArray$1(interceptor.returnValue)) {
     returnValueHooks.push(...interceptor.returnValue);
   }
   returnValueHooks.forEach((hook) => {
@@ -5388,7 +5388,7 @@ function getApiInterceptorHooks(method) {
 function invokeApi(method, api, options, params) {
   const interceptor = getApiInterceptorHooks(method);
   if (interceptor && Object.keys(interceptor).length) {
-    if (isArray(interceptor.invoke)) {
+    if (isArray$1(interceptor.invoke)) {
       const res = queue(interceptor.invoke, options);
       return res.then((options2) => {
         return api(wrapperOptions(getApiInterceptorHooks(method), options2), ...params);
@@ -5400,13 +5400,13 @@ function invokeApi(method, api, options, params) {
   return api(options, ...params);
 }
 function hasCallback(args) {
-  if (isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction(args[cb]))) {
+  if (isPlainObject$1(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction(args[cb]))) {
     return true;
   }
   return false;
 }
-function handlePromise(promise) {
-  return promise;
+function handlePromise(promise2) {
+  return promise2;
 }
 function promisify$1(name, fn) {
   return (args = {}, ...rest) => {
@@ -5513,28 +5513,28 @@ let deviceWidth = 0;
 let deviceDPR = 0;
 function checkDeviceWidth() {
   var _a, _b;
-  let windowWidth, pixelRatio, platform;
+  let windowWidth, pixelRatio, platform2;
   {
     const windowInfo = ((_a = wx.getWindowInfo) === null || _a === void 0 ? void 0 : _a.call(wx)) || wx.getSystemInfoSync();
     const deviceInfo = ((_b = wx.getDeviceInfo) === null || _b === void 0 ? void 0 : _b.call(wx)) || wx.getSystemInfoSync();
     windowWidth = windowInfo.windowWidth;
     pixelRatio = windowInfo.pixelRatio;
-    platform = deviceInfo.platform;
+    platform2 = deviceInfo.platform;
   }
   deviceWidth = windowWidth;
   deviceDPR = pixelRatio;
-  isIOS = platform === "ios";
+  isIOS = platform2 === "ios";
 }
-const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
+const upx2px = defineSyncApi(API_UPX2PX, (number2, newDeviceWidth) => {
   if (deviceWidth === 0) {
     checkDeviceWidth();
   }
-  number = Number(number);
-  if (number === 0) {
+  number2 = Number(number2);
+  if (number2 === 0) {
     return 0;
   }
   let width = newDeviceWidth || deviceWidth;
-  let result = number / BASE_DEVICE_WIDTH * width;
+  let result = number2 / BASE_DEVICE_WIDTH * width;
   if (result < 0) {
     result = -result;
   }
@@ -5546,7 +5546,7 @@ const upx2px = defineSyncApi(API_UPX2PX, (number, newDeviceWidth) => {
       result = 0.5;
     }
   }
-  return number < 0 ? -result : result;
+  return number2 < 0 ? -result : result;
 }, Upx2pxProtocol);
 function __f__(type, filename, ...args) {
   if (filename) {
@@ -5578,13 +5578,13 @@ function removeInterceptorHook(interceptors2, interceptor) {
   Object.keys(interceptor).forEach((name) => {
     const hooks = interceptors2[name];
     const hook = interceptor[name];
-    if (isArray(hooks) && isFunction(hook)) {
+    if (isArray$1(hooks) && isFunction(hook)) {
       remove(hooks, hook);
     }
   });
 }
 function mergeHook(parentVal, childVal) {
-  const res = childVal ? parentVal ? parentVal.concat(childVal) : isArray(childVal) ? childVal : [childVal] : parentVal;
+  const res = childVal ? parentVal ? parentVal.concat(childVal) : isArray$1(childVal) ? childVal : [childVal] : parentVal;
   return res ? dedupeHooks(res) : res;
 }
 function dedupeHooks(hooks) {
@@ -5597,20 +5597,20 @@ function dedupeHooks(hooks) {
   return res;
 }
 const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
-  if (isString(method) && isPlainObject(interceptor)) {
+  if (isString(method) && isPlainObject$1(interceptor)) {
     mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
-  } else if (isPlainObject(method)) {
+  } else if (isPlainObject$1(method)) {
     mergeInterceptorHook(globalInterceptors, method);
   }
 }, AddInterceptorProtocol);
 const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
   if (isString(method)) {
-    if (isPlainObject(interceptor)) {
+    if (isPlainObject$1(interceptor)) {
       removeInterceptorHook(scopedInterceptors[method], interceptor);
     } else {
       delete scopedInterceptors[method];
     }
-  } else if (isPlainObject(method)) {
+  } else if (isPlainObject$1(method)) {
     removeInterceptorHook(globalInterceptors, method);
   }
 }, RemoveInterceptorProtocol);
@@ -5680,7 +5680,7 @@ const $once = defineSyncApi(API_ONCE, (name, callback) => {
   return () => eventBus.off(name, callback);
 }, OnceProtocol);
 const $off = defineSyncApi(API_OFF, (name, callback) => {
-  if (!isArray(name))
+  if (!isArray$1(name))
     name = name ? [name] : [];
   name.forEach((n) => {
     eventBus.off(n, callback);
@@ -5796,8 +5796,8 @@ function shouldPromise(name) {
 }
 if (!Promise.prototype.finally) {
   Promise.prototype.finally = function(onfinally) {
-    const promise = this.constructor;
-    return this.then((value) => promise.resolve(onfinally && onfinally()).then(() => value), (reason) => promise.resolve(onfinally && onfinally()).then(() => {
+    const promise2 = this.constructor;
+    return this.then((value) => promise2.resolve(onfinally && onfinally()).then(() => value), (reason) => promise2.resolve(onfinally && onfinally()).then(() => {
       throw reason;
     }));
   };
@@ -5829,7 +5829,7 @@ function initWrapper(protocols2) {
     };
   }
   function processArgs(methodName, fromArgs, argsOption = {}, returnValue = {}, keepFromArgs = false) {
-    if (isPlainObject(fromArgs)) {
+    if (isPlainObject$1(fromArgs)) {
       const toArgs = keepFromArgs === true ? fromArgs : {};
       if (isFunction(argsOption)) {
         argsOption = argsOption(fromArgs, toArgs) || {};
@@ -5844,7 +5844,7 @@ function initWrapper(protocols2) {
             console.warn(`微信小程序 ${methodName} 暂不支持 ${key}`);
           } else if (isString(keyOption)) {
             toArgs[keyOption] = fromArgs[key];
-          } else if (isPlainObject(keyOption)) {
+          } else if (isPlainObject$1(keyOption)) {
             toArgs[keyOption.name ? keyOption.name : key] = keyOption.value;
           }
         } else if (CALLBACKS.indexOf(key) !== -1) {
@@ -5968,14 +5968,14 @@ function addSafeAreaInsets(fromRes, toRes) {
     };
   }
 }
-function getOSInfo(system, platform) {
+function getOSInfo(system, platform2) {
   let osName = "";
   let osVersion = "";
-  if (platform && false) {
-    osName = platform;
+  if (platform2 && false) {
+    osName = platform2;
     osVersion = system;
   } else {
-    osName = system.split(" ")[0] || platform;
+    osName = system.split(" ")[0] || platform2;
     osVersion = system.split(" ")[1] || "";
   }
   osName = osName.toLocaleLowerCase();
@@ -6002,8 +6002,8 @@ function getOSInfo(system, platform) {
   };
 }
 function populateParameters(fromRes, toRes) {
-  const { brand = "", model = "", system = "", language = "", theme, version: version2, platform, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation } = fromRes;
-  const { osName, osVersion } = getOSInfo(system, platform);
+  const { brand = "", model = "", system = "", language = "", theme, version: version2, platform: platform2, fontSizeSetting, SDKVersion, pixelRatio, deviceOrientation } = fromRes;
+  const { osName, osVersion } = getOSInfo(system, platform2);
   let hostVersion = version2;
   let deviceType = getGetDeviceType(fromRes, model);
   let deviceBrand = getDeviceBrand(brand);
@@ -6106,7 +6106,7 @@ const previewImage = {
       return;
     }
     const urls = fromArgs.urls;
-    if (!isArray(urls)) {
+    if (!isArray$1(urls)) {
       return;
     }
     const len = urls.length;
@@ -6137,11 +6137,11 @@ const showActionSheet = {
 };
 const getDeviceInfo = {
   returnValue: (fromRes, toRes) => {
-    const { brand, model, system = "", platform = "" } = fromRes;
+    const { brand, model, system = "", platform: platform2 = "" } = fromRes;
     let deviceType = getGetDeviceType(fromRes, model);
     let deviceBrand = getDeviceBrand(brand);
     useDeviceId()(fromRes, toRes);
-    const { osName, osVersion } = getOSInfo(system, platform);
+    const { osName, osVersion } = getOSInfo(system, platform2);
     toRes = sortObject(extend(toRes, {
       deviceType,
       deviceBrand,
@@ -6264,7 +6264,7 @@ const baseApis = {
   invokePushCallback,
   __f__
 };
-function initUni(api, protocols2, platform = wx) {
+function initUni(api, protocols2, platform2 = wx) {
   const wrapper = initWrapper(protocols2);
   const UniProxyHandlers = {
     get(target, key) {
@@ -6277,7 +6277,7 @@ function initUni(api, protocols2, platform = wx) {
       if (hasOwn(baseApis, key)) {
         return promisify(key, baseApis[key]);
       }
-      return promisify(key, wrapper(key, platform[key]));
+      return promisify(key, wrapper(key, platform2[key]));
     }
   };
   return new Proxy({}, UniProxyHandlers);
@@ -6408,12 +6408,12 @@ var protocols = /* @__PURE__ */ Object.freeze({
   showActionSheet
 });
 const wx$1 = initWx();
-var index = initUni(shims, protocols, wx$1);
+var index$1 = initUni(shims, protocols, wx$1);
 function initRuntimeSocket(hosts, port, id) {
   if (hosts == "" || port == "" || id == "")
     return Promise.resolve(null);
-  return hosts.split(",").reduce((promise, host2) => {
-    return promise.then((socket) => {
+  return hosts.split(",").reduce((promise2, host2) => {
+    return promise2.then((socket) => {
       if (socket != null)
         return Promise.resolve(socket);
       return tryConnectSocket(host2, port, id);
@@ -6423,7 +6423,7 @@ function initRuntimeSocket(hosts, port, id) {
 const SOCKET_TIMEOUT = 500;
 function tryConnectSocket(host2, port, id) {
   return new Promise((resolve, reject) => {
-    const socket = index.connectSocket({
+    const socket = index$1.connectSocket({
       url: `ws://${host2}:${port}/${id}`,
       multiple: true,
       // 支付宝小程序 是否开启多实例
@@ -6462,8 +6462,8 @@ const errorQueue = /* @__PURE__ */ new Set();
 const errorExtra = {};
 function sendErrorMessages(errors) {
   if (sendError == null) {
-    errors.forEach((error) => {
-      errorQueue.add(error);
+    errors.forEach((error2) => {
+      errorQueue.add(error2);
     });
     return;
   }
@@ -6509,31 +6509,31 @@ function setSendError(value, extra = {}) {
   }
 }
 function initOnError() {
-  function onError2(error) {
+  function onError2(error2) {
     try {
-      if (typeof PromiseRejectionEvent !== "undefined" && error instanceof PromiseRejectionEvent && error.reason instanceof Error && error.reason.message && error.reason.message.includes(`Cannot create property 'errMsg' on string 'taskId`)) {
+      if (typeof PromiseRejectionEvent !== "undefined" && error2 instanceof PromiseRejectionEvent && error2.reason instanceof Error && error2.reason.message && error2.reason.message.includes(`Cannot create property 'errMsg' on string 'taskId`)) {
         return;
       }
       if (true) {
-        originalConsole.error(error);
+        originalConsole.error(error2);
       }
-      sendErrorMessages([error]);
+      sendErrorMessages([error2]);
     } catch (err) {
       originalConsole.error(err);
     }
   }
-  if (typeof index.onError === "function") {
-    index.onError(onError2);
+  if (typeof index$1.onError === "function") {
+    index$1.onError(onError2);
   }
-  if (typeof index.onUnhandledRejection === "function") {
-    index.onUnhandledRejection(onError2);
+  if (typeof index$1.onUnhandledRejection === "function") {
+    index$1.onUnhandledRejection(onError2);
   }
   return function offError2() {
-    if (typeof index.offError === "function") {
-      index.offError(onError2);
+    if (typeof index$1.offError === "function") {
+      index$1.offError(onError2);
     }
-    if (typeof index.offUnhandledRejection === "function") {
-      index.offUnhandledRejection(onError2);
+    if (typeof index$1.offUnhandledRejection === "function") {
+      index$1.offUnhandledRejection(onError2);
     }
   };
 }
@@ -6880,16 +6880,16 @@ function rewriteConsole() {
     };
   } else {
     {
-      if (typeof index !== "undefined" && index.__f__) {
-        const oldLog = index.__f__;
+      if (typeof index$1 !== "undefined" && index$1.__f__) {
+        const oldLog = index$1.__f__;
         if (oldLog) {
-          index.__f__ = function(...args) {
+          index$1.__f__ = function(...args) {
             const [type, filename, ...rest] = args;
             oldLog(type, "", ...rest);
             sendConsoleMessages([formatMessage(type, [...rest, filename])]);
           };
           return function restoreConsole() {
-            index.__f__ = oldLog;
+            index$1.__f__ = oldLog;
           };
         }
       }
@@ -6911,9 +6911,9 @@ function isConsoleWritable() {
   return isWritable;
 }
 function initRuntimeSocketService() {
-  const hosts = "172.20.32.1,192.168.56.1,192.168.137.1,192.168.81.1,192.168.110.39,127.0.0.1";
+  const hosts = "172.20.32.1,192.168.56.1,192.168.137.1,192.168.81.1,192.168.132.186,127.0.0.1";
   const port = "8090";
-  const id = "mp-weixin_Bi8WlW";
+  const id = "mp-weixin__uWUg4";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();
@@ -6960,8 +6960,8 @@ function initRuntimeSocketService() {
   });
 }
 const ERROR_CHAR = "‌";
-function wrapError(error) {
-  return `${ERROR_CHAR}${error}${ERROR_CHAR}`;
+function wrapError(error2) {
+  return `${ERROR_CHAR}${error2}${ERROR_CHAR}`;
 }
 function initMiniProgramGlobalFlag() {
   if (typeof wx$1 !== "undefined") {
@@ -7029,7 +7029,7 @@ function initWorkletMethods(mpMethods, vueMethods) {
   }
 }
 function initWxsCallMethods(methods, wxsCallMethods) {
-  if (!isArray(wxsCallMethods)) {
+  if (!isArray$1(wxsCallMethods)) {
     return;
   }
   wxsCallMethods.forEach((callMethod) => {
@@ -7131,7 +7131,7 @@ function initBaseInstance(instance, options) {
     ctx._self = {};
   }
   instance.slots = {};
-  if (isArray(options.slots) && options.slots.length) {
+  if (isArray$1(options.slots) && options.slots.length) {
     options.slots.forEach((name) => {
       instance.slots[name] = true;
     });
@@ -7209,7 +7209,7 @@ function findHooks(vueOptions, hooks = /* @__PURE__ */ new Set()) {
     {
       const { extends: extendsOptions, mixins } = vueOptions;
       if (mixins) {
-        mixins.forEach((mixin) => findHooks(mixin, hooks));
+        mixins.forEach((mixin2) => findHooks(mixin2, hooks));
       }
       if (extendsOptions) {
         findHooks(extendsOptions, hooks);
@@ -7248,11 +7248,11 @@ const findMixinRuntimeHooks = /* @__PURE__ */ once(() => {
   const app = isFunction(getApp) && getApp({ allowDefault: true });
   if (app && app.$vm && app.$vm.$) {
     const mixins = app.$vm.$.appContext.mixins;
-    if (isArray(mixins)) {
+    if (isArray$1(mixins)) {
       const hooks = Object.keys(MINI_PROGRAM_PAGE_RUNTIME_HOOKS);
-      mixins.forEach((mixin) => {
+      mixins.forEach((mixin2) => {
         hooks.forEach((hook) => {
-          if (hasOwn(mixin, hook) && !runtimeHooks.includes(hook)) {
+          if (hasOwn(mixin2, hook) && !runtimeHooks.includes(hook)) {
             runtimeHooks.push(hook);
           }
         });
@@ -7460,7 +7460,7 @@ function initProps(mpComponentOptions) {
 }
 const PROP_TYPES = [String, Number, Boolean, Object, Array, null];
 function parsePropType(type, defaultValue) {
-  if (isArray(type) && type.length === 1) {
+  if (isArray$1(type) && type.length === 1) {
     return type[0];
   }
   return type;
@@ -7470,17 +7470,17 @@ function normalizePropType(type, defaultValue) {
   return PROP_TYPES.indexOf(res) !== -1 ? res : null;
 }
 function initPageProps({ properties }, rawProps) {
-  if (isArray(rawProps)) {
+  if (isArray$1(rawProps)) {
     rawProps.forEach((key) => {
       properties[key] = {
         type: String,
         value: ""
       };
     });
-  } else if (isPlainObject(rawProps)) {
+  } else if (isPlainObject$1(rawProps)) {
     Object.keys(rawProps).forEach((key) => {
       const opts = rawProps[key];
-      if (isPlainObject(opts)) {
+      if (isPlainObject$1(opts)) {
         let value = opts.default;
         if (isFunction(value)) {
           value = value();
@@ -7504,7 +7504,7 @@ function findPropsData(properties, isPage2) {
 }
 function findPagePropsData(properties) {
   const propsData = {};
-  if (isPlainObject(properties)) {
+  if (isPlainObject$1(properties)) {
     Object.keys(properties).forEach((name) => {
       if (builtInProps.indexOf(name) === -1) {
         propsData[name] = resolvePropValue(properties[name]);
@@ -7515,7 +7515,7 @@ function findPagePropsData(properties) {
 }
 function initFormField(vm) {
   const vueOptions = vm.$options;
-  if (isArray(vueOptions.behaviors) && vueOptions.behaviors.includes("uni://form-field")) {
+  if (isArray$1(vueOptions.behaviors) && vueOptions.behaviors.includes("uni://form-field")) {
     vm.$watch("modelValue", () => {
       vm.$scope && vm.$scope.setData({
         name: vm.name,
@@ -7591,11 +7591,11 @@ function initBehaviors(vueOptions) {
     vueOptions.props = vueProps = [];
   }
   const behaviors = [];
-  if (isArray(vueBehaviors)) {
+  if (isArray$1(vueBehaviors)) {
     vueBehaviors.forEach((behavior) => {
       behaviors.push(behavior.replace("uni://", "wx://"));
       if (behavior === "uni://form-field") {
-        if (isArray(vueProps)) {
+        if (isArray$1(vueProps)) {
           vueProps.push("name");
           vueProps.push("modelValue");
         } else {
@@ -7625,9 +7625,9 @@ function parseComponent(vueOptions, { parse, mocks: mocks2, isPage: isPage2, isP
     addGlobalClass: true,
     pureDataPattern: /^uP$/
   };
-  if (isArray(vueOptions.mixins)) {
+  if (isArray$1(vueOptions.mixins)) {
     vueOptions.mixins.forEach((item) => {
-      if (isObject(item.options)) {
+      if (isObject$1(item.options)) {
         extend(options, item.options);
       }
     });
@@ -7743,7 +7743,7 @@ function initTriggerEvent(mpInstance) {
   };
   try {
     mpInstance.triggerEvent = newTriggerEvent;
-  } catch (error) {
+  } catch (error2) {
     mpInstance._triggerEvent = newTriggerEvent;
   }
 }
@@ -7859,11 +7859,1846 @@ const createSubpackageApp = initCreateSubpackageApp();
   wx.createPluginApp = global.createPluginApp = createPluginApp;
   wx.createSubpackageApp = global.createSubpackageApp = createSubpackageApp;
 }
+var toString = Object.prototype.toString;
+function isArray(val) {
+  return toString.call(val) === "[object Array]";
+}
+function isObject(val) {
+  return val !== null && typeof val === "object";
+}
+function isDate(val) {
+  return toString.call(val) === "[object Date]";
+}
+function isURLSearchParams(val) {
+  return typeof URLSearchParams !== "undefined" && val instanceof URLSearchParams;
+}
+function forEach(obj, fn) {
+  if (obj === null || typeof obj === "undefined") {
+    return;
+  }
+  if (typeof obj !== "object") {
+    obj = [obj];
+  }
+  if (isArray(obj)) {
+    for (var i = 0, l = obj.length; i < l; i++) {
+      fn.call(null, obj[i], i, obj);
+    }
+  } else {
+    for (var key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        fn.call(null, obj[key], key, obj);
+      }
+    }
+  }
+}
+function isPlainObject(obj) {
+  return Object.prototype.toString.call(obj) === "[object Object]";
+}
+function deepMerge$1() {
+  let result = {};
+  function assignValue(val, key) {
+    if (typeof result[key] === "object" && typeof val === "object") {
+      result[key] = deepMerge$1(result[key], val);
+    } else if (typeof val === "object") {
+      result[key] = deepMerge$1({}, val);
+    } else {
+      result[key] = val;
+    }
+  }
+  for (let i = 0, l = arguments.length; i < l; i++) {
+    forEach(arguments[i], assignValue);
+  }
+  return result;
+}
+function isUndefined(val) {
+  return typeof val === "undefined";
+}
+function encode(val) {
+  return encodeURIComponent(val).replace(/%40/gi, "@").replace(/%3A/gi, ":").replace(/%24/g, "$").replace(/%2C/gi, ",").replace(/%20/g, "+").replace(/%5B/gi, "[").replace(/%5D/gi, "]");
+}
+function buildURL(url2, params, paramsSerializer) {
+  if (!params) {
+    return url2;
+  }
+  var serializedParams;
+  if (paramsSerializer) {
+    serializedParams = paramsSerializer(params);
+  } else if (isURLSearchParams(params)) {
+    serializedParams = params.toString();
+  } else {
+    var parts = [];
+    forEach(params, function serialize(val, key) {
+      if (val === null || typeof val === "undefined") {
+        return;
+      }
+      if (isArray(val)) {
+        key = key + "[]";
+      } else {
+        val = [val];
+      }
+      forEach(val, function parseValue(v) {
+        if (isDate(v)) {
+          v = v.toISOString();
+        } else if (isObject(v)) {
+          v = JSON.stringify(v);
+        }
+        parts.push(encode(key) + "=" + encode(v));
+      });
+    });
+    serializedParams = parts.join("&");
+  }
+  if (serializedParams) {
+    var hashmarkIndex = url2.indexOf("#");
+    if (hashmarkIndex !== -1) {
+      url2 = url2.slice(0, hashmarkIndex);
+    }
+    url2 += (url2.indexOf("?") === -1 ? "?" : "&") + serializedParams;
+  }
+  return url2;
+}
+function isAbsoluteURL(url2) {
+  return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url2);
+}
+function combineURLs(baseURL, relativeURL) {
+  return relativeURL ? baseURL.replace(/\/+$/, "") + "/" + relativeURL.replace(/^\/+/, "") : baseURL;
+}
+function buildFullPath(baseURL, requestedURL) {
+  if (baseURL && !isAbsoluteURL(requestedURL)) {
+    return combineURLs(baseURL, requestedURL);
+  }
+  return requestedURL;
+}
+function settle(resolve, reject, response) {
+  const validateStatus2 = response.config.validateStatus;
+  const status = response.statusCode;
+  if (status && (!validateStatus2 || validateStatus2(status))) {
+    resolve(response);
+  } else {
+    reject(response);
+  }
+}
+const mergeKeys$1 = (keys, config2) => {
+  let config3 = {};
+  keys.forEach((prop) => {
+    if (!isUndefined(config2[prop])) {
+      config3[prop] = config2[prop];
+    }
+  });
+  return config3;
+};
+const adapter = (config2) => {
+  return new Promise((resolve, reject) => {
+    let fullPath = buildURL(buildFullPath(config2.baseURL, config2.url), config2.params, config2.paramsSerializer);
+    const _config = {
+      url: fullPath,
+      header: config2.header,
+      complete: (response) => {
+        config2.fullPath = fullPath;
+        response.config = config2;
+        response.rawData = response.data;
+        try {
+          let jsonParseHandle = false;
+          const forcedJSONParsingType = typeof config2.forcedJSONParsing;
+          if (forcedJSONParsingType === "boolean") {
+            jsonParseHandle = config2.forcedJSONParsing;
+          } else if (forcedJSONParsingType === "object") {
+            const includesMethod = config2.forcedJSONParsing.include || [];
+            jsonParseHandle = includesMethod.includes(config2.method);
+          }
+          if (jsonParseHandle && typeof response.data === "string") {
+            response.data = JSON.parse(response.data);
+          }
+        } catch (e2) {
+        }
+        settle(resolve, reject, response);
+      }
+    };
+    let requestTask;
+    if (config2.method === "UPLOAD") {
+      delete _config.header["content-type"];
+      delete _config.header["Content-Type"];
+      let otherConfig = {
+        filePath: config2.filePath,
+        name: config2.name
+      };
+      const optionalKeys = [
+        "timeout",
+        "formData"
+      ];
+      requestTask = index$1.uploadFile({ ..._config, ...otherConfig, ...mergeKeys$1(optionalKeys, config2) });
+    } else if (config2.method === "DOWNLOAD") {
+      const optionalKeys = [
+        "timeout",
+        "filePath"
+      ];
+      requestTask = index$1.downloadFile({ ..._config, ...mergeKeys$1(optionalKeys, config2) });
+    } else {
+      const optionalKeys = [
+        "data",
+        "method",
+        "timeout",
+        "dataType",
+        "responseType",
+        "enableHttp2",
+        "enableQuic",
+        "enableCache",
+        "enableHttpDNS",
+        "httpDNSServiceId",
+        "enableChunked",
+        "forceCellularNetwork"
+      ];
+      requestTask = index$1.request({ ..._config, ...mergeKeys$1(optionalKeys, config2) });
+    }
+    if (config2.getTask) {
+      config2.getTask(requestTask, config2);
+    }
+  });
+};
+const dispatchRequest = (config2) => {
+  return adapter(config2);
+};
+function InterceptorManager() {
+  this.handlers = [];
+}
+InterceptorManager.prototype.use = function use(fulfilled, rejected) {
+  this.handlers.push({
+    fulfilled,
+    rejected
+  });
+  return this.handlers.length - 1;
+};
+InterceptorManager.prototype.eject = function eject(id) {
+  if (this.handlers[id]) {
+    this.handlers[id] = null;
+  }
+};
+InterceptorManager.prototype.forEach = function forEach2(fn) {
+  this.handlers.forEach((h) => {
+    if (h !== null) {
+      fn(h);
+    }
+  });
+};
+const mergeKeys = (keys, globalsConfig, config2) => {
+  let config3 = {};
+  keys.forEach((prop) => {
+    if (!isUndefined(config2[prop])) {
+      config3[prop] = config2[prop];
+    } else if (!isUndefined(globalsConfig[prop])) {
+      config3[prop] = globalsConfig[prop];
+    }
+  });
+  return config3;
+};
+const mergeConfig = (globalsConfig, config2 = {}) => {
+  const method = config2.method || globalsConfig.method || "GET";
+  let config3 = {
+    baseURL: config2.baseURL || globalsConfig.baseURL || "",
+    method,
+    url: config2.url || "",
+    params: config2.params || {},
+    custom: { ...globalsConfig.custom || {}, ...config2.custom || {} },
+    header: deepMerge$1(globalsConfig.header || {}, config2.header || {})
+  };
+  const defaultToConfig2Keys = ["getTask", "validateStatus", "paramsSerializer", "forcedJSONParsing"];
+  config3 = { ...config3, ...mergeKeys(defaultToConfig2Keys, globalsConfig, config2) };
+  if (method === "DOWNLOAD") {
+    const downloadKeys = [
+      "timeout",
+      "filePath"
+    ];
+    config3 = { ...config3, ...mergeKeys(downloadKeys, globalsConfig, config2) };
+  } else if (method === "UPLOAD") {
+    delete config3.header["content-type"];
+    delete config3.header["Content-Type"];
+    const uploadKeys = [
+      "filePath",
+      "name",
+      "timeout",
+      "formData"
+    ];
+    uploadKeys.forEach((prop) => {
+      if (!isUndefined(config2[prop])) {
+        config3[prop] = config2[prop];
+      }
+    });
+    if (isUndefined(config3.timeout) && !isUndefined(globalsConfig.timeout)) {
+      config3["timeout"] = globalsConfig["timeout"];
+    }
+  } else {
+    const defaultsKeys = [
+      "data",
+      "timeout",
+      "dataType",
+      "responseType",
+      "enableHttp2",
+      "enableQuic",
+      "enableCache",
+      "enableHttpDNS",
+      "httpDNSServiceId",
+      "enableChunked",
+      "forceCellularNetwork"
+    ];
+    config3 = { ...config3, ...mergeKeys(defaultsKeys, globalsConfig, config2) };
+  }
+  return config3;
+};
+const defaults = {
+  baseURL: "",
+  header: {},
+  method: "GET",
+  dataType: "json",
+  paramsSerializer: null,
+  responseType: "text",
+  custom: {},
+  timeout: 6e4,
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  },
+  // 是否尝试将响应数据json化
+  forcedJSONParsing: true
+};
+var clone = function() {
+  function _instanceof(obj, type) {
+    return type != null && obj instanceof type;
+  }
+  var nativeMap;
+  try {
+    nativeMap = Map;
+  } catch (_) {
+    nativeMap = function() {
+    };
+  }
+  var nativeSet;
+  try {
+    nativeSet = Set;
+  } catch (_) {
+    nativeSet = function() {
+    };
+  }
+  var nativePromise;
+  try {
+    nativePromise = Promise;
+  } catch (_) {
+    nativePromise = function() {
+    };
+  }
+  function clone2(parent, circular, depth, prototype, includeNonEnumerable) {
+    if (typeof circular === "object") {
+      depth = circular.depth;
+      prototype = circular.prototype;
+      includeNonEnumerable = circular.includeNonEnumerable;
+      circular = circular.circular;
+    }
+    var allParents = [];
+    var allChildren = [];
+    var useBuffer = typeof Buffer != "undefined";
+    if (typeof circular == "undefined")
+      circular = true;
+    if (typeof depth == "undefined")
+      depth = Infinity;
+    function _clone(parent2, depth2) {
+      if (parent2 === null)
+        return null;
+      if (depth2 === 0)
+        return parent2;
+      var child;
+      var proto;
+      if (typeof parent2 != "object") {
+        return parent2;
+      }
+      if (_instanceof(parent2, nativeMap)) {
+        child = new nativeMap();
+      } else if (_instanceof(parent2, nativeSet)) {
+        child = new nativeSet();
+      } else if (_instanceof(parent2, nativePromise)) {
+        child = new nativePromise(function(resolve, reject) {
+          parent2.then(function(value) {
+            resolve(_clone(value, depth2 - 1));
+          }, function(err) {
+            reject(_clone(err, depth2 - 1));
+          });
+        });
+      } else if (clone2.__isArray(parent2)) {
+        child = [];
+      } else if (clone2.__isRegExp(parent2)) {
+        child = new RegExp(parent2.source, __getRegExpFlags(parent2));
+        if (parent2.lastIndex)
+          child.lastIndex = parent2.lastIndex;
+      } else if (clone2.__isDate(parent2)) {
+        child = new Date(parent2.getTime());
+      } else if (useBuffer && Buffer.isBuffer(parent2)) {
+        if (Buffer.from) {
+          child = Buffer.from(parent2);
+        } else {
+          child = new Buffer(parent2.length);
+          parent2.copy(child);
+        }
+        return child;
+      } else if (_instanceof(parent2, Error)) {
+        child = Object.create(parent2);
+      } else {
+        if (typeof prototype == "undefined") {
+          proto = Object.getPrototypeOf(parent2);
+          child = Object.create(proto);
+        } else {
+          child = Object.create(prototype);
+          proto = prototype;
+        }
+      }
+      if (circular) {
+        var index2 = allParents.indexOf(parent2);
+        if (index2 != -1) {
+          return allChildren[index2];
+        }
+        allParents.push(parent2);
+        allChildren.push(child);
+      }
+      if (_instanceof(parent2, nativeMap)) {
+        parent2.forEach(function(value, key) {
+          var keyChild = _clone(key, depth2 - 1);
+          var valueChild = _clone(value, depth2 - 1);
+          child.set(keyChild, valueChild);
+        });
+      }
+      if (_instanceof(parent2, nativeSet)) {
+        parent2.forEach(function(value) {
+          var entryChild = _clone(value, depth2 - 1);
+          child.add(entryChild);
+        });
+      }
+      for (var i in parent2) {
+        var attrs = Object.getOwnPropertyDescriptor(parent2, i);
+        if (attrs) {
+          child[i] = _clone(parent2[i], depth2 - 1);
+        }
+        try {
+          var objProperty = Object.getOwnPropertyDescriptor(parent2, i);
+          if (objProperty.set === "undefined") {
+            continue;
+          }
+          child[i] = _clone(parent2[i], depth2 - 1);
+        } catch (e2) {
+          if (e2 instanceof TypeError) {
+            continue;
+          } else if (e2 instanceof ReferenceError) {
+            continue;
+          }
+        }
+      }
+      if (Object.getOwnPropertySymbols) {
+        var symbols = Object.getOwnPropertySymbols(parent2);
+        for (var i = 0; i < symbols.length; i++) {
+          var symbol = symbols[i];
+          var descriptor = Object.getOwnPropertyDescriptor(parent2, symbol);
+          if (descriptor && !descriptor.enumerable && !includeNonEnumerable) {
+            continue;
+          }
+          child[symbol] = _clone(parent2[symbol], depth2 - 1);
+          Object.defineProperty(child, symbol, descriptor);
+        }
+      }
+      if (includeNonEnumerable) {
+        var allPropertyNames = Object.getOwnPropertyNames(parent2);
+        for (var i = 0; i < allPropertyNames.length; i++) {
+          var propertyName = allPropertyNames[i];
+          var descriptor = Object.getOwnPropertyDescriptor(parent2, propertyName);
+          if (descriptor && descriptor.enumerable) {
+            continue;
+          }
+          child[propertyName] = _clone(parent2[propertyName], depth2 - 1);
+          Object.defineProperty(child, propertyName, descriptor);
+        }
+      }
+      return child;
+    }
+    return _clone(parent, depth);
+  }
+  clone2.clonePrototype = function clonePrototype(parent) {
+    if (parent === null)
+      return null;
+    var c = function() {
+    };
+    c.prototype = parent;
+    return new c();
+  };
+  function __objToStr(o2) {
+    return Object.prototype.toString.call(o2);
+  }
+  clone2.__objToStr = __objToStr;
+  function __isDate(o2) {
+    return typeof o2 === "object" && __objToStr(o2) === "[object Date]";
+  }
+  clone2.__isDate = __isDate;
+  function __isArray(o2) {
+    return typeof o2 === "object" && __objToStr(o2) === "[object Array]";
+  }
+  clone2.__isArray = __isArray;
+  function __isRegExp(o2) {
+    return typeof o2 === "object" && __objToStr(o2) === "[object RegExp]";
+  }
+  clone2.__isRegExp = __isRegExp;
+  function __getRegExpFlags(re) {
+    var flags = "";
+    if (re.global)
+      flags += "g";
+    if (re.ignoreCase)
+      flags += "i";
+    if (re.multiline)
+      flags += "m";
+    return flags;
+  }
+  clone2.__getRegExpFlags = __getRegExpFlags;
+  return clone2;
+}();
+class Request {
+  /**
+   * @param {Object} arg - 全局配置
+   * @param {String} arg.baseURL - 全局根路径
+   * @param {Object} arg.header - 全局header
+   * @param {String} arg.method = [GET|POST|PUT|DELETE|CONNECT|HEAD|OPTIONS|TRACE] - 全局默认请求方式
+   * @param {String} arg.dataType = [json] - 全局默认的dataType
+   * @param {String} arg.responseType = [text|arraybuffer] - 全局默认的responseType。支付宝小程序不支持
+   * @param {Object} arg.custom - 全局默认的自定义参数
+   * @param {Number} arg.timeout - 全局默认的超时时间，单位 ms。默认60000。H5(HBuilderX 2.9.9+)、APP(HBuilderX 2.9.9+)、微信小程序（2.10.0）、支付宝小程序
+   * @param {Boolean} arg.sslVerify - 全局默认的是否验证 ssl 证书。默认true.仅App安卓端支持（HBuilderX 2.3.3+）
+   * @param {Boolean} arg.withCredentials - 全局默认的跨域请求时是否携带凭证（cookies）。默认false。仅H5支持（HBuilderX 2.6.15+）
+   * @param {Boolean} arg.firstIpv4 - 全DNS解析时优先使用ipv4。默认false。仅 App-Android 支持 (HBuilderX 2.8.0+)
+   * @param {Function(statusCode):Boolean} arg.validateStatus - 全局默认的自定义验证器。默认statusCode >= 200 && statusCode < 300
+   */
+  constructor(arg = {}) {
+    if (!isPlainObject(arg)) {
+      arg = {};
+      index$1.__f__("warn", "at node_modules/@climblee/uv-ui/libs/luch-request/core/Request.js:37", "设置全局参数必须接收一个Object");
+    }
+    this.config = clone({ ...defaults, ...arg });
+    this.interceptors = {
+      request: new InterceptorManager(),
+      response: new InterceptorManager()
+    };
+  }
+  /**
+   * @Function
+   * @param {Request~setConfigCallback} f - 设置全局默认配置
+   */
+  setConfig(f2) {
+    this.config = f2(this.config);
+  }
+  middleware(config2) {
+    config2 = mergeConfig(this.config, config2);
+    let chain = [dispatchRequest, void 0];
+    let promise2 = Promise.resolve(config2);
+    this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
+      chain.unshift(interceptor.fulfilled, interceptor.rejected);
+    });
+    this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
+      chain.push(interceptor.fulfilled, interceptor.rejected);
+    });
+    while (chain.length) {
+      promise2 = promise2.then(chain.shift(), chain.shift());
+    }
+    return promise2;
+  }
+  /**
+   * @Function
+   * @param {Object} config - 请求配置项
+   * @prop {String} options.url - 请求路径
+   * @prop {Object} options.data - 请求参数
+   * @prop {Object} [options.responseType = config.responseType] [text|arraybuffer] - 响应的数据类型
+   * @prop {Object} [options.dataType = config.dataType] - 如果设为 json，会尝试对返回的数据做一次 JSON.parse
+   * @prop {Object} [options.header = config.header] - 请求header
+   * @prop {Object} [options.method = config.method] - 请求方法
+   * @returns {Promise<unknown>}
+   */
+  request(config2 = {}) {
+    return this.middleware(config2);
+  }
+  get(url2, options = {}) {
+    return this.middleware({
+      url: url2,
+      method: "GET",
+      ...options
+    });
+  }
+  post(url2, data, options = {}) {
+    return this.middleware({
+      url: url2,
+      data,
+      method: "POST",
+      ...options
+    });
+  }
+  put(url2, data, options = {}) {
+    return this.middleware({
+      url: url2,
+      data,
+      method: "PUT",
+      ...options
+    });
+  }
+  delete(url2, data, options = {}) {
+    return this.middleware({
+      url: url2,
+      data,
+      method: "DELETE",
+      ...options
+    });
+  }
+  connect(url2, data, options = {}) {
+    return this.middleware({
+      url: url2,
+      data,
+      method: "CONNECT",
+      ...options
+    });
+  }
+  head(url2, data, options = {}) {
+    return this.middleware({
+      url: url2,
+      data,
+      method: "HEAD",
+      ...options
+    });
+  }
+  options(url2, data, options = {}) {
+    return this.middleware({
+      url: url2,
+      data,
+      method: "OPTIONS",
+      ...options
+    });
+  }
+  trace(url2, data, options = {}) {
+    return this.middleware({
+      url: url2,
+      data,
+      method: "TRACE",
+      ...options
+    });
+  }
+  upload(url2, config2 = {}) {
+    config2.url = url2;
+    config2.method = "UPLOAD";
+    return this.middleware(config2);
+  }
+  download(url2, config2 = {}) {
+    config2.url = url2;
+    config2.method = "DOWNLOAD";
+    return this.middleware(config2);
+  }
+  get version() {
+    return "3.1.0";
+  }
+}
+function email(value) {
+  return /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(value);
+}
+function mobile(value) {
+  return /^1([3589]\d|4[5-9]|6[1-2,4-7]|7[0-8])\d{8}$/.test(value);
+}
+function url(value) {
+  return /^((https|http|ftp|rtsp|mms):\/\/)(([0-9a-zA-Z_!~*'().&=+$%-]+: )?[0-9a-zA-Z_!~*'().&=+$%-]+@)?(([0-9]{1,3}.){3}[0-9]{1,3}|([0-9a-zA-Z_!~*'()-]+.)*([0-9a-zA-Z][0-9a-zA-Z-]{0,61})?[0-9a-zA-Z].[a-zA-Z]{2,6})(:[0-9]{1,4})?((\/?)|(\/[0-9a-zA-Z_!~*'().;?:@&=+$,%#-]+)+\/?)$/.test(value);
+}
+function date(value) {
+  if (!value)
+    return false;
+  if (number(value))
+    value = +value;
+  return !/Invalid|NaN/.test(new Date(value).toString());
+}
+function dateISO(value) {
+  return /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/.test(value);
+}
+function number(value) {
+  return /^[\+-]?(\d+\.?\d*|\.\d+|\d\.\d+e\+\d+)$/.test(value);
+}
+function string(value) {
+  return typeof value === "string";
+}
+function digits(value) {
+  return /^\d+$/.test(value);
+}
+function idCard(value) {
+  return /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/.test(
+    value
+  );
+}
+function carNo(value) {
+  const xreg = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}(([0-9]{5}[DF]$)|([DF][A-HJ-NP-Z0-9][0-9]{4}$))/;
+  const creg = /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳]{1}$/;
+  if (value.length === 7) {
+    return creg.test(value);
+  }
+  if (value.length === 8) {
+    return xreg.test(value);
+  }
+  return false;
+}
+function amount(value) {
+  return /^[1-9]\d*(,\d{3})*(\.\d{1,2})?$|^0\.\d{1,2}$/.test(value);
+}
+function chinese(value) {
+  const reg = /^[\u4e00-\u9fa5]+$/gi;
+  return reg.test(value);
+}
+function letter(value) {
+  return /^[a-zA-Z]*$/.test(value);
+}
+function enOrNum(value) {
+  const reg = /^[0-9a-zA-Z]*$/g;
+  return reg.test(value);
+}
+function contains(value, param) {
+  return value.indexOf(param) >= 0;
+}
+function range$1(value, param) {
+  return value >= param[0] && value <= param[1];
+}
+function rangeLength(value, param) {
+  return value.length >= param[0] && value.length <= param[1];
+}
+function landline(value) {
+  const reg = /^\d{3,4}-\d{7,8}(-\d{3,4})?$/;
+  return reg.test(value);
+}
+function empty(value) {
+  switch (typeof value) {
+    case "undefined":
+      return true;
+    case "string":
+      if (value.replace(/(^[ \t\n\r]*)|([ \t\n\r]*$)/g, "").length == 0)
+        return true;
+      break;
+    case "boolean":
+      if (!value)
+        return true;
+      break;
+    case "number":
+      if (value === 0 || isNaN(value))
+        return true;
+      break;
+    case "object":
+      if (value === null || value.length === 0)
+        return true;
+      for (const i in value) {
+        return false;
+      }
+      return true;
+  }
+  return false;
+}
+function jsonString(value) {
+  if (typeof value === "string") {
+    try {
+      const obj = JSON.parse(value);
+      if (typeof obj === "object" && obj) {
+        return true;
+      }
+      return false;
+    } catch (e2) {
+      return false;
+    }
+  }
+  return false;
+}
+function array(value) {
+  if (typeof Array.isArray === "function") {
+    return Array.isArray(value);
+  }
+  return Object.prototype.toString.call(value) === "[object Array]";
+}
+function object(value) {
+  return Object.prototype.toString.call(value) === "[object Object]";
+}
+function code(value, len = 6) {
+  return new RegExp(`^\\d{${len}}$`).test(value);
+}
+function func(value) {
+  return typeof value === "function";
+}
+function promise(value) {
+  return object(value) && func(value.then) && func(value.catch);
+}
+function image(value) {
+  const newValue = value.split("?")[0];
+  const IMAGE_REGEXP = /\.(jpeg|jpg|gif|png|svg|webp|jfif|bmp|dpg)/i;
+  return IMAGE_REGEXP.test(newValue);
+}
+function video(value) {
+  const VIDEO_REGEXP = /\.(mp4|mpg|mpeg|dat|asf|avi|rm|rmvb|mov|wmv|flv|mkv|m3u8)/i;
+  return VIDEO_REGEXP.test(value);
+}
+function regExp(o2) {
+  return o2 && Object.prototype.toString.call(o2) === "[object RegExp]";
+}
+const test = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  amount,
+  array,
+  carNo,
+  chinese,
+  code,
+  contains,
+  date,
+  dateISO,
+  digits,
+  email,
+  empty,
+  enOrNum,
+  func,
+  idCard,
+  image,
+  jsonString,
+  landline,
+  letter,
+  mobile,
+  number,
+  object,
+  promise,
+  range: range$1,
+  rangeLength,
+  regExp,
+  string,
+  url,
+  video
+}, Symbol.toStringTag, { value: "Module" }));
+function strip(num, precision = 15) {
+  return +parseFloat(Number(num).toPrecision(precision));
+}
+function digitLength(num) {
+  const eSplit = num.toString().split(/[eE]/);
+  const len = (eSplit[0].split(".")[1] || "").length - +(eSplit[1] || 0);
+  return len > 0 ? len : 0;
+}
+function float2Fixed(num) {
+  if (num.toString().indexOf("e") === -1) {
+    return Number(num.toString().replace(".", ""));
+  }
+  const dLen = digitLength(num);
+  return dLen > 0 ? strip(Number(num) * Math.pow(10, dLen)) : Number(num);
+}
+function checkBoundary(num) {
+  {
+    if (num > Number.MAX_SAFE_INTEGER || num < Number.MIN_SAFE_INTEGER) {
+      index$1.__f__("warn", "at node_modules/@climblee/uv-ui/libs/function/digit.js:45", `${num} 超出了精度限制，结果可能不正确`);
+    }
+  }
+}
+function iteratorOperation(arr, operation) {
+  const [num1, num2, ...others] = arr;
+  let res = operation(num1, num2);
+  others.forEach((num) => {
+    res = operation(res, num);
+  });
+  return res;
+}
+function times(...nums) {
+  if (nums.length > 2) {
+    return iteratorOperation(nums, times);
+  }
+  const [num1, num2] = nums;
+  const num1Changed = float2Fixed(num1);
+  const num2Changed = float2Fixed(num2);
+  const baseNum = digitLength(num1) + digitLength(num2);
+  const leftValue = num1Changed * num2Changed;
+  checkBoundary(leftValue);
+  return leftValue / Math.pow(10, baseNum);
+}
+function divide(...nums) {
+  if (nums.length > 2) {
+    return iteratorOperation(nums, divide);
+  }
+  const [num1, num2] = nums;
+  const num1Changed = float2Fixed(num1);
+  const num2Changed = float2Fixed(num2);
+  checkBoundary(num1Changed);
+  checkBoundary(num2Changed);
+  return times(num1Changed / num2Changed, strip(Math.pow(10, digitLength(num2) - digitLength(num1))));
+}
+function round(num, ratio) {
+  const base = Math.pow(10, ratio);
+  let result = divide(Math.round(Math.abs(times(num, base))), base);
+  if (num < 0 && result !== 0) {
+    result = times(result, -1);
+  }
+  return result;
+}
+function range(min = 0, max = 0, value = 0) {
+  return Math.max(min, Math.min(max, Number(value)));
+}
+function getPx(value, unit = false) {
+  if (number(value)) {
+    return unit ? `${value}px` : Number(value);
+  }
+  if (/(rpx|upx)$/.test(value)) {
+    return unit ? `${index$1.upx2px(parseInt(value))}px` : Number(index$1.upx2px(parseInt(value)));
+  }
+  return unit ? `${parseInt(value)}px` : parseInt(value);
+}
+function sleep(value = 30) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, value);
+  });
+}
+function os() {
+  return index$1.getSystemInfoSync().platform.toLowerCase();
+}
+function sys() {
+  return index$1.getSystemInfoSync();
+}
+function random(min, max) {
+  if (min >= 0 && max > 0 && max >= min) {
+    const gab = max - min + 1;
+    return Math.floor(Math.random() * gab + min);
+  }
+  return 0;
+}
+function guid(len = 32, firstU = true, radix = null) {
+  const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");
+  const uuid = [];
+  radix = radix || chars.length;
+  if (len) {
+    for (let i = 0; i < len; i++)
+      uuid[i] = chars[0 | Math.random() * radix];
+  } else {
+    let r;
+    uuid[8] = uuid[13] = uuid[18] = uuid[23] = "-";
+    uuid[14] = "4";
+    for (let i = 0; i < 36; i++) {
+      if (!uuid[i]) {
+        r = 0 | Math.random() * 16;
+        uuid[i] = chars[i == 19 ? r & 3 | 8 : r];
+      }
+    }
+  }
+  if (firstU) {
+    uuid.shift();
+    return `u${uuid.join("")}`;
+  }
+  return uuid.join("");
+}
+function $parent(name = void 0) {
+  let parent = this.$parent;
+  while (parent) {
+    if (parent.$options && parent.$options.name !== name) {
+      parent = parent.$parent;
+    } else {
+      return parent;
+    }
+  }
+  return false;
+}
+function addStyle(customStyle, target = "object") {
+  if (empty(customStyle) || typeof customStyle === "object" && target === "object" || target === "string" && typeof customStyle === "string") {
+    return customStyle;
+  }
+  if (target === "object") {
+    customStyle = trim(customStyle);
+    const styleArray = customStyle.split(";");
+    const style = {};
+    for (let i = 0; i < styleArray.length; i++) {
+      if (styleArray[i]) {
+        const item = styleArray[i].split(":");
+        style[trim(item[0])] = trim(item[1]);
+      }
+    }
+    return style;
+  }
+  let string2 = "";
+  for (const i in customStyle) {
+    const key = i.replace(/([A-Z])/g, "-$1").toLowerCase();
+    string2 += `${key}:${customStyle[i]};`;
+  }
+  return trim(string2);
+}
+function addUnit(value = "auto", unit = ((_b) => (_b = ((_a) => (_a = index$1 == null ? void 0 : index$1.$uv) == null ? void 0 : _a.config)()) == null ? void 0 : _b.unit)() ? ((_d) => (_d = ((_c) => (_c = index$1 == null ? void 0 : index$1.$uv) == null ? void 0 : _c.config)()) == null ? void 0 : _d.unit)() : "px") {
+  value = String(value);
+  return number(value) ? `${value}${unit}` : value;
+}
+function deepClone(obj, cache = /* @__PURE__ */ new WeakMap()) {
+  if (obj === null || typeof obj !== "object")
+    return obj;
+  if (cache.has(obj))
+    return cache.get(obj);
+  let clone2;
+  if (obj instanceof Date) {
+    clone2 = new Date(obj.getTime());
+  } else if (obj instanceof RegExp) {
+    clone2 = new RegExp(obj);
+  } else if (obj instanceof Map) {
+    clone2 = new Map(Array.from(obj, ([key, value]) => [key, deepClone(value, cache)]));
+  } else if (obj instanceof Set) {
+    clone2 = new Set(Array.from(obj, (value) => deepClone(value, cache)));
+  } else if (Array.isArray(obj)) {
+    clone2 = obj.map((value) => deepClone(value, cache));
+  } else if (Object.prototype.toString.call(obj) === "[object Object]") {
+    clone2 = Object.create(Object.getPrototypeOf(obj));
+    cache.set(obj, clone2);
+    for (const [key, value] of Object.entries(obj)) {
+      clone2[key] = deepClone(value, cache);
+    }
+  } else {
+    clone2 = Object.assign({}, obj);
+  }
+  cache.set(obj, clone2);
+  return clone2;
+}
+function deepMerge(target = {}, source = {}) {
+  target = deepClone(target);
+  if (typeof target !== "object" || target === null || typeof source !== "object" || source === null)
+    return target;
+  const merged = Array.isArray(target) ? target.slice() : Object.assign({}, target);
+  for (const prop in source) {
+    if (!source.hasOwnProperty(prop))
+      continue;
+    const sourceValue = source[prop];
+    const targetValue = merged[prop];
+    if (sourceValue instanceof Date) {
+      merged[prop] = new Date(sourceValue);
+    } else if (sourceValue instanceof RegExp) {
+      merged[prop] = new RegExp(sourceValue);
+    } else if (sourceValue instanceof Map) {
+      merged[prop] = new Map(sourceValue);
+    } else if (sourceValue instanceof Set) {
+      merged[prop] = new Set(sourceValue);
+    } else if (typeof sourceValue === "object" && sourceValue !== null) {
+      merged[prop] = deepMerge(targetValue, sourceValue);
+    } else {
+      merged[prop] = sourceValue;
+    }
+  }
+  return merged;
+}
+function error(err) {
+  {
+    index$1.__f__("error", "at node_modules/@climblee/uv-ui/libs/function/index.js:250", `uvui提示：${err}`);
+  }
+}
+function randomArray(array2 = []) {
+  return array2.sort(() => Math.random() - 0.5);
+}
+if (!String.prototype.padStart) {
+  String.prototype.padStart = function(maxLength, fillString = " ") {
+    if (Object.prototype.toString.call(fillString) !== "[object String]") {
+      throw new TypeError(
+        "fillString must be String"
+      );
+    }
+    const str = this;
+    if (str.length >= maxLength)
+      return String(str);
+    const fillLength = maxLength - str.length;
+    let times2 = Math.ceil(fillLength / fillString.length);
+    while (times2 >>= 1) {
+      fillString += fillString;
+      if (times2 === 1) {
+        fillString += fillString;
+      }
+    }
+    return fillString.slice(0, fillLength) + str;
+  };
+}
+function timeFormat(dateTime = null, formatStr = "yyyy-mm-dd") {
+  let date2;
+  if (!dateTime) {
+    date2 = /* @__PURE__ */ new Date();
+  } else if (/^\d{10}$/.test(dateTime == null ? void 0 : dateTime.toString().trim())) {
+    date2 = new Date(dateTime * 1e3);
+  } else if (typeof dateTime === "string" && /^\d+$/.test(dateTime.trim())) {
+    date2 = new Date(Number(dateTime));
+  } else if (typeof dateTime === "string" && dateTime.includes("-") && !dateTime.includes("T")) {
+    date2 = new Date(dateTime.replace(/-/g, "/"));
+  } else {
+    date2 = new Date(dateTime);
+  }
+  const timeSource = {
+    "y": date2.getFullYear().toString(),
+    // 年
+    "m": (date2.getMonth() + 1).toString().padStart(2, "0"),
+    // 月
+    "d": date2.getDate().toString().padStart(2, "0"),
+    // 日
+    "h": date2.getHours().toString().padStart(2, "0"),
+    // 时
+    "M": date2.getMinutes().toString().padStart(2, "0"),
+    // 分
+    "s": date2.getSeconds().toString().padStart(2, "0")
+    // 秒
+    // 有其他格式化字符需求可以继续添加，必须转化成字符串
+  };
+  for (const key in timeSource) {
+    const [ret] = new RegExp(`${key}+`).exec(formatStr) || [];
+    if (ret) {
+      const beginIndex = key === "y" && ret.length === 2 ? 2 : 0;
+      formatStr = formatStr.replace(ret, timeSource[key].slice(beginIndex));
+    }
+  }
+  return formatStr;
+}
+function timeFrom(timestamp = null, format = "yyyy-mm-dd") {
+  if (timestamp == null)
+    timestamp = Number(/* @__PURE__ */ new Date());
+  timestamp = parseInt(timestamp);
+  if (timestamp.toString().length == 10)
+    timestamp *= 1e3;
+  let timer = (/* @__PURE__ */ new Date()).getTime() - timestamp;
+  timer = parseInt(timer / 1e3);
+  let tips = "";
+  switch (true) {
+    case timer < 300:
+      tips = "刚刚";
+      break;
+    case (timer >= 300 && timer < 3600):
+      tips = `${parseInt(timer / 60)}分钟前`;
+      break;
+    case (timer >= 3600 && timer < 86400):
+      tips = `${parseInt(timer / 3600)}小时前`;
+      break;
+    case (timer >= 86400 && timer < 2592e3):
+      tips = `${parseInt(timer / 86400)}天前`;
+      break;
+    default:
+      if (format === false) {
+        if (timer >= 2592e3 && timer < 365 * 86400) {
+          tips = `${parseInt(timer / (86400 * 30))}个月前`;
+        } else {
+          tips = `${parseInt(timer / (86400 * 365))}年前`;
+        }
+      } else {
+        tips = timeFormat(timestamp, format);
+      }
+  }
+  return tips;
+}
+function trim(str, pos = "both") {
+  str = String(str);
+  if (pos == "both") {
+    return str.replace(/^\s+|\s+$/g, "");
+  }
+  if (pos == "left") {
+    return str.replace(/^\s*/, "");
+  }
+  if (pos == "right") {
+    return str.replace(/(\s*$)/g, "");
+  }
+  if (pos == "all") {
+    return str.replace(/\s+/g, "");
+  }
+  return str;
+}
+function queryParams(data = {}, isPrefix = true, arrayFormat = "brackets") {
+  const prefix = isPrefix ? "?" : "";
+  const _result = [];
+  if (["indices", "brackets", "repeat", "comma"].indexOf(arrayFormat) == -1)
+    arrayFormat = "brackets";
+  for (const key in data) {
+    const value = data[key];
+    if (["", void 0, null].indexOf(value) >= 0) {
+      continue;
+    }
+    if (value.constructor === Array) {
+      switch (arrayFormat) {
+        case "indices":
+          for (let i = 0; i < value.length; i++) {
+            _result.push(`${key}[${i}]=${value[i]}`);
+          }
+          break;
+        case "brackets":
+          value.forEach((_value) => {
+            _result.push(`${key}[]=${_value}`);
+          });
+          break;
+        case "repeat":
+          value.forEach((_value) => {
+            _result.push(`${key}=${_value}`);
+          });
+          break;
+        case "comma":
+          let commaStr = "";
+          value.forEach((_value) => {
+            commaStr += (commaStr ? "," : "") + _value;
+          });
+          _result.push(`${key}=${commaStr}`);
+          break;
+        default:
+          value.forEach((_value) => {
+            _result.push(`${key}[]=${_value}`);
+          });
+      }
+    } else {
+      _result.push(`${key}=${value}`);
+    }
+  }
+  return _result.length ? prefix + _result.join("&") : "";
+}
+function toast(title, duration = 2e3) {
+  index$1.showToast({
+    title: String(title),
+    icon: "none",
+    duration
+  });
+}
+function type2icon(type = "success", fill = false) {
+  if (["primary", "info", "error", "warning", "success"].indexOf(type) == -1)
+    type = "success";
+  let iconName = "";
+  switch (type) {
+    case "primary":
+      iconName = "info-circle";
+      break;
+    case "info":
+      iconName = "info-circle";
+      break;
+    case "error":
+      iconName = "close-circle";
+      break;
+    case "warning":
+      iconName = "error-circle";
+      break;
+    case "success":
+      iconName = "checkmark-circle";
+      break;
+    default:
+      iconName = "checkmark-circle";
+  }
+  if (fill)
+    iconName += "-fill";
+  return iconName;
+}
+function priceFormat(number2, decimals = 0, decimalPoint = ".", thousandsSeparator = ",") {
+  number2 = `${number2}`.replace(/[^0-9+-Ee.]/g, "");
+  const n = !isFinite(+number2) ? 0 : +number2;
+  const prec = !isFinite(+decimals) ? 0 : Math.abs(decimals);
+  const sep = typeof thousandsSeparator === "undefined" ? "," : thousandsSeparator;
+  const dec = typeof decimalPoint === "undefined" ? "." : decimalPoint;
+  let s = "";
+  s = (prec ? round(n, prec) + "" : `${Math.round(n)}`).split(".");
+  const re = /(-?\d+)(\d{3})/;
+  while (re.test(s[0])) {
+    s[0] = s[0].replace(re, `$1${sep}$2`);
+  }
+  if ((s[1] || "").length < prec) {
+    s[1] = s[1] || "";
+    s[1] += new Array(prec - s[1].length + 1).join("0");
+  }
+  return s.join(dec);
+}
+function getDuration(value, unit = true) {
+  const valueNum = parseInt(value);
+  if (unit) {
+    if (/s$/.test(value))
+      return value;
+    return value > 30 ? `${value}ms` : `${value}s`;
+  }
+  if (/ms$/.test(value))
+    return valueNum;
+  if (/s$/.test(value))
+    return valueNum > 30 ? valueNum : valueNum * 1e3;
+  return valueNum;
+}
+function padZero(value) {
+  return `00${value}`.slice(-2);
+}
+function formValidate(instance, event) {
+  const formItem = $parent.call(instance, "uv-form-item");
+  const form = $parent.call(instance, "uv-form");
+  if (formItem && form) {
+    form.validateField(formItem.prop, () => {
+    }, event);
+  }
+}
+function getProperty(obj, key) {
+  if (!obj) {
+    return;
+  }
+  if (typeof key !== "string" || key === "") {
+    return "";
+  }
+  if (key.indexOf(".") !== -1) {
+    const keys = key.split(".");
+    let firstObj = obj[keys[0]] || {};
+    for (let i = 1; i < keys.length; i++) {
+      if (firstObj) {
+        firstObj = firstObj[keys[i]];
+      }
+    }
+    return firstObj;
+  }
+  return obj[key];
+}
+function setProperty(obj, key, value) {
+  if (!obj) {
+    return;
+  }
+  const inFn = function(_obj, keys, v) {
+    if (keys.length === 1) {
+      _obj[keys[0]] = v;
+      return;
+    }
+    while (keys.length > 1) {
+      const k = keys[0];
+      if (!_obj[k] || typeof _obj[k] !== "object") {
+        _obj[k] = {};
+      }
+      keys.shift();
+      inFn(_obj[k], keys, v);
+    }
+  };
+  if (typeof key !== "string" || key === "")
+    ;
+  else if (key.indexOf(".") !== -1) {
+    const keys = key.split(".");
+    inFn(obj, keys, value);
+  } else {
+    obj[key] = value;
+  }
+}
+function page() {
+  var _a;
+  const pages2 = getCurrentPages();
+  const route2 = (_a = pages2[pages2.length - 1]) == null ? void 0 : _a.route;
+  return `/${route2 ? route2 : ""}`;
+}
+function pages() {
+  const pages2 = getCurrentPages();
+  return pages2;
+}
+function getHistoryPage(back = 0) {
+  const pages2 = getCurrentPages();
+  const len = pages2.length;
+  return pages2[len - 1 + back];
+}
+function setConfig({
+  props = {},
+  config: config2 = {},
+  color = {},
+  zIndex = {}
+}) {
+  const {
+    deepMerge: deepMerge2
+  } = index$1.$uv;
+  index$1.$uv.config = deepMerge2(index$1.$uv.config, config2);
+  index$1.$uv.props = deepMerge2(index$1.$uv.props, props);
+  index$1.$uv.color = deepMerge2(index$1.$uv.color, color);
+  index$1.$uv.zIndex = deepMerge2(index$1.$uv.zIndex, zIndex);
+}
+const index = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  $parent,
+  addStyle,
+  addUnit,
+  deepClone,
+  deepMerge,
+  error,
+  formValidate,
+  getDuration,
+  getHistoryPage,
+  getProperty,
+  getPx,
+  guid,
+  os,
+  padZero,
+  page,
+  pages,
+  priceFormat,
+  queryParams,
+  random,
+  randomArray,
+  range,
+  setConfig,
+  setProperty,
+  sleep,
+  sys,
+  timeFormat,
+  timeFrom,
+  toast,
+  trim,
+  type2icon
+}, Symbol.toStringTag, { value: "Module" }));
+class Router {
+  constructor() {
+    this.config = {
+      type: "navigateTo",
+      url: "",
+      delta: 1,
+      // navigateBack页面后退时,回退的层数
+      params: {},
+      // 传递的参数
+      animationType: "pop-in",
+      // 窗口动画,只在APP有效
+      animationDuration: 300,
+      // 窗口动画持续时间,单位毫秒,只在APP有效
+      intercept: false,
+      // 是否需要拦截
+      events: {}
+      // 页面间通信接口，用于监听被打开页面发送到当前页面的数据。hbuilderx 2.8.9+ 开始支持。
+    };
+    this.route = this.route.bind(this);
+  }
+  // 判断url前面是否有"/"，如果没有则加上，否则无法跳转
+  addRootPath(url2) {
+    return url2[0] === "/" ? url2 : `/${url2}`;
+  }
+  // 整合路由参数
+  mixinParam(url2, params) {
+    url2 = url2 && this.addRootPath(url2);
+    let query = "";
+    if (/.*\/.*\?.*=.*/.test(url2)) {
+      query = queryParams(params, false);
+      return url2 += `&${query}`;
+    }
+    query = queryParams(params);
+    return url2 += query;
+  }
+  // 对外的方法名称
+  async route(options = {}, params = {}) {
+    let mergeConfig2 = {};
+    if (typeof options === "string") {
+      mergeConfig2.url = this.mixinParam(options, params);
+      mergeConfig2.type = "navigateTo";
+    } else {
+      mergeConfig2 = deepMerge(this.config, options);
+      mergeConfig2.url = this.mixinParam(options.url, options.params);
+    }
+    if (mergeConfig2.url === page())
+      return;
+    if (params.intercept) {
+      mergeConfig2.intercept = params.intercept;
+    }
+    mergeConfig2.params = params;
+    mergeConfig2 = deepMerge(this.config, mergeConfig2);
+    if (typeof mergeConfig2.intercept === "function") {
+      const isNext = await new Promise((resolve, reject) => {
+        mergeConfig2.intercept(mergeConfig2, resolve);
+      });
+      isNext && this.openPage(mergeConfig2);
+    } else {
+      this.openPage(mergeConfig2);
+    }
+  }
+  // 执行路由跳转
+  openPage(config2) {
+    const {
+      url: url2,
+      type,
+      delta,
+      animationType,
+      animationDuration,
+      events
+    } = config2;
+    if (config2.type == "navigateTo" || config2.type == "to") {
+      index$1.navigateTo({
+        url: url2,
+        animationType,
+        animationDuration,
+        events
+      });
+    }
+    if (config2.type == "redirectTo" || config2.type == "redirect") {
+      index$1.redirectTo({
+        url: url2
+      });
+    }
+    if (config2.type == "switchTab" || config2.type == "tab") {
+      index$1.switchTab({
+        url: url2
+      });
+    }
+    if (config2.type == "reLaunch" || config2.type == "launch") {
+      index$1.reLaunch({
+        url: url2
+      });
+    }
+    if (config2.type == "navigateBack" || config2.type == "back") {
+      index$1.navigateBack({
+        delta
+      });
+    }
+  }
+}
+const route = new Router().route;
+let timeout = null;
+function debounce(func2, wait = 500, immediate = false) {
+  if (timeout !== null)
+    clearTimeout(timeout);
+  if (immediate) {
+    const callNow = !timeout;
+    timeout = setTimeout(() => {
+      timeout = null;
+    }, wait);
+    if (callNow)
+      typeof func2 === "function" && func2();
+  } else {
+    timeout = setTimeout(() => {
+      typeof func2 === "function" && func2();
+    }, wait);
+  }
+}
+let flag;
+function throttle(func2, wait = 500, immediate = true) {
+  if (immediate) {
+    if (!flag) {
+      flag = true;
+      typeof func2 === "function" && func2();
+      setTimeout(() => {
+        flag = false;
+      }, wait);
+    }
+  } else if (!flag) {
+    flag = true;
+    setTimeout(() => {
+      flag = false;
+      typeof func2 === "function" && func2();
+    }, wait);
+  }
+}
+const mixin = {
+  // 定义每个组件都可能需要用到的外部样式以及类名
+  props: {
+    // 每个组件都有的父组件传递的样式，可以为字符串或者对象形式
+    customStyle: {
+      type: [Object, String],
+      default: () => ({})
+    },
+    customClass: {
+      type: String,
+      default: ""
+    },
+    // 跳转的页面路径
+    url: {
+      type: String,
+      default: ""
+    },
+    // 页面跳转的类型
+    linkType: {
+      type: String,
+      default: "navigateTo"
+    }
+  },
+  data() {
+    return {};
+  },
+  onLoad() {
+    this.$uv.getRect = this.$uvGetRect;
+  },
+  created() {
+    this.$uv.getRect = this.$uvGetRect;
+  },
+  computed: {
+    $uv() {
+      var _a, _b;
+      return {
+        ...index,
+        test,
+        route,
+        debounce,
+        throttle,
+        unit: (_b = (_a = index$1 == null ? void 0 : index$1.$uv) == null ? void 0 : _a.config) == null ? void 0 : _b.unit
+      };
+    },
+    /**
+     * 生成bem规则类名
+     * 由于微信小程序，H5，nvue之间绑定class的差异，无法通过:class="[bem()]"的形式进行同用
+     * 故采用如下折中做法，最后返回的是数组（一般平台）或字符串（支付宝和字节跳动平台），类似['a', 'b', 'c']或'a b c'的形式
+     * @param {String} name 组件名称
+     * @param {Array} fixed 一直会存在的类名
+     * @param {Array} change 会根据变量值为true或者false而出现或者隐藏的类名
+     * @returns {Array|string}
+     */
+    bem() {
+      return function(name, fixed, change) {
+        const prefix = `uv-${name}--`;
+        const classes = {};
+        if (fixed) {
+          fixed.map((item) => {
+            classes[prefix + this[item]] = true;
+          });
+        }
+        if (change) {
+          change.map((item) => {
+            this[item] ? classes[prefix + item] = this[item] : delete classes[prefix + item];
+          });
+        }
+        return Object.keys(classes);
+      };
+    }
+  },
+  methods: {
+    // 跳转某一个页面
+    openPage(urlKey = "url") {
+      const url2 = this[urlKey];
+      if (url2) {
+        index$1[this.linkType]({
+          url: url2
+        });
+      }
+    },
+    // 查询节点信息
+    // 目前此方法在支付宝小程序中无法获取组件跟接点的尺寸，为支付宝的bug(2020-07-21)
+    // 解决办法为在组件根部再套一个没有任何作用的view元素
+    $uvGetRect(selector, all) {
+      return new Promise((resolve) => {
+        index$1.createSelectorQuery().in(this)[all ? "selectAll" : "select"](selector).boundingClientRect((rect) => {
+          if (all && Array.isArray(rect) && rect.length) {
+            resolve(rect);
+          }
+          if (!all && rect) {
+            resolve(rect);
+          }
+        }).exec();
+      });
+    },
+    getParentData(parentName = "") {
+      if (!this.parent)
+        this.parent = {};
+      this.parent = this.$uv.$parent.call(this, parentName);
+      if (this.parent.children) {
+        this.parent.children.indexOf(this) === -1 && this.parent.children.push(this);
+      }
+      if (this.parent && this.parentData) {
+        Object.keys(this.parentData).map((key) => {
+          this.parentData[key] = this.parent[key];
+        });
+      }
+    },
+    // 阻止事件冒泡
+    preventEvent(e2) {
+      e2 && typeof e2.stopPropagation === "function" && e2.stopPropagation();
+    },
+    // 空操作
+    noop(e2) {
+      this.preventEvent(e2);
+    }
+  },
+  onReachBottom() {
+    index$1.$emit("uvOnReachBottom");
+  },
+  beforeDestroy() {
+    if (this.parent && array(this.parent.children)) {
+      const childrenList = this.parent.children;
+      childrenList.map((child, index2) => {
+        if (child === this) {
+          childrenList.splice(index2, 1);
+        }
+      });
+    }
+  },
+  // 兼容vue3
+  unmounted() {
+    if (this.parent && array(this.parent.children)) {
+      const childrenList = this.parent.children;
+      childrenList.map((child, index2) => {
+        if (child === this) {
+          childrenList.splice(index2, 1);
+        }
+      });
+    }
+  }
+};
+const mpMixin = {
+  // 将自定义节点设置成虚拟的（去掉自定义组件包裹层），更加接近Vue组件的表现，能更好的使用flex属性
+  options: {
+    virtualHost: true
+  }
+};
+const mpShare = {
+  onLoad() {
+    index$1.$uv.mpShare = {
+      title: "",
+      // 默认为小程序名称
+      path: "",
+      // 默认为当前页面路径
+      imageUrl: ""
+      // 默认为当前页面的截图
+    };
+  },
+  onShareAppMessage() {
+    return index$1.$uv.mpShare;
+  }
+};
+function colorGradient(startColor = "rgb(0, 0, 0)", endColor = "rgb(255, 255, 255)", step = 10) {
+  const startRGB = hexToRgb(startColor, false);
+  const startR = startRGB[0];
+  const startG = startRGB[1];
+  const startB = startRGB[2];
+  const endRGB = hexToRgb(endColor, false);
+  const endR = endRGB[0];
+  const endG = endRGB[1];
+  const endB = endRGB[2];
+  const sR = (endR - startR) / step;
+  const sG = (endG - startG) / step;
+  const sB = (endB - startB) / step;
+  const colorArr = [];
+  for (let i = 0; i < step; i++) {
+    let hex = rgbToHex(`rgb(${Math.round(sR * i + startR)},${Math.round(sG * i + startG)},${Math.round(sB * i + startB)})`);
+    if (i === 0)
+      hex = rgbToHex(startColor);
+    if (i === step - 1)
+      hex = rgbToHex(endColor);
+    colorArr.push(hex);
+  }
+  return colorArr;
+}
+function hexToRgb(sColor, str = true) {
+  const reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+  sColor = String(sColor).toLowerCase();
+  if (sColor && reg.test(sColor)) {
+    if (sColor.length === 4) {
+      let sColorNew = "#";
+      for (let i = 1; i < 4; i += 1) {
+        sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
+      }
+      sColor = sColorNew;
+    }
+    const sColorChange = [];
+    for (let i = 1; i < 7; i += 2) {
+      sColorChange.push(parseInt(`0x${sColor.slice(i, i + 2)}`));
+    }
+    if (!str) {
+      return sColorChange;
+    }
+    return `rgb(${sColorChange[0]},${sColorChange[1]},${sColorChange[2]})`;
+  }
+  if (/^(rgb|RGB)/.test(sColor)) {
+    const arr = sColor.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
+    return arr.map((val) => Number(val));
+  }
+  return sColor;
+}
+function rgbToHex(rgb) {
+  const _this = rgb;
+  const reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+  if (/^(rgb|RGB)/.test(_this)) {
+    const aColor = _this.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
+    let strHex = "#";
+    for (let i = 0; i < aColor.length; i++) {
+      let hex = Number(aColor[i]).toString(16);
+      hex = String(hex).length == 1 ? `${0}${hex}` : hex;
+      if (hex === "0") {
+        hex += hex;
+      }
+      strHex += hex;
+    }
+    if (strHex.length !== 7) {
+      strHex = _this;
+    }
+    return strHex;
+  }
+  if (reg.test(_this)) {
+    const aNum = _this.replace(/#/, "").split("");
+    if (aNum.length === 6) {
+      return _this;
+    }
+    if (aNum.length === 3) {
+      let numHex = "#";
+      for (let i = 0; i < aNum.length; i += 1) {
+        numHex += aNum[i] + aNum[i];
+      }
+      return numHex;
+    }
+  } else {
+    return _this;
+  }
+}
+function colorToRgba(color, alpha) {
+  color = rgbToHex(color);
+  const reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+  let sColor = String(color).toLowerCase();
+  if (sColor && reg.test(sColor)) {
+    if (sColor.length === 4) {
+      let sColorNew = "#";
+      for (let i = 1; i < 4; i += 1) {
+        sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1));
+      }
+      sColor = sColorNew;
+    }
+    const sColorChange = [];
+    for (let i = 1; i < 7; i += 2) {
+      sColorChange.push(parseInt(`0x${sColor.slice(i, i + 2)}`));
+    }
+    return `rgba(${sColorChange.join(",")},${alpha})`;
+  }
+  return sColor;
+}
+const version = "1.1.20";
+{
+  index$1.__f__("log", "at node_modules/@climblee/uv-ui/libs/config/config.js:6", `
+ %c uvui V${version} https://www.uvui.cn/ 
+
+`, "color: #ffffff; background: #3c9cff; padding:5px 0; border-radius: 5px;");
+}
+const config = {
+  v: version,
+  version,
+  // 主题名称
+  type: [
+    "primary",
+    "success",
+    "info",
+    "error",
+    "warning"
+  ],
+  // 颜色部分，本来可以通过scss的:export导出供js使用，但是奈何nvue不支持
+  color: {
+    "uv-primary": "#2979ff",
+    "uv-warning": "#ff9900",
+    "uv-success": "#19be6b",
+    "uv-error": "#fa3534",
+    "uv-info": "#909399",
+    "uv-main-color": "#303133",
+    "uv-content-color": "#606266",
+    "uv-tips-color": "#909399",
+    "uv-light-color": "#c0c4cc"
+  },
+  // 默认单位，可以通过配置为rpx，那么在用于传入组件大小参数为数值时，就默认为rpx
+  unit: "px"
+};
+let platform = "none";
+platform = "vue3";
+platform = "weixin";
+platform = "mp";
+const platform$1 = platform;
+const $uv = {
+  route,
+  config,
+  test,
+  date: timeFormat,
+  // 另名date
+  ...index,
+  colorGradient,
+  hexToRgb,
+  rgbToHex,
+  colorToRgba,
+  http: new Request(),
+  debounce,
+  throttle,
+  platform: platform$1,
+  mixin,
+  mpMixin
+};
+index$1.$uv = $uv;
+const install = (Vue, options = {}) => {
+  var _a, _b;
+  const cloneMixin = deepClone(mixin);
+  (_a = cloneMixin == null ? void 0 : cloneMixin.props) == null ? true : delete _a.customClass;
+  (_b = cloneMixin == null ? void 0 : cloneMixin.props) == null ? true : delete _b.customStyle;
+  Vue.mixin(cloneMixin);
+  if (options.mpShare) {
+    Vue.mixin(mpShare);
+  }
+  Vue.config.globalProperties.$uv = $uv;
+};
+const uvUI = {
+  install
+};
 exports._export_sfc = _export_sfc;
 exports.createSSRApp = createSSRApp;
 exports.e = e;
 exports.f = f;
-exports.index = index;
+exports.index = index$1;
 exports.o = o;
 exports.t = t;
+exports.uvUI = uvUI;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/common/vendor.js.map

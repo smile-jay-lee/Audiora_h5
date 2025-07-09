@@ -10,7 +10,7 @@
 					<text class="join-date">加入于 {{userInfo.joinDate}}</text>
 				</view>
 			</view>
-			<view class="user-stats">
+			<!-- <view class="user-stats">
 				<view class="stat-item" @click="goToFollowing">
 					<text class="stat-number">{{userInfo.following}}</text>
 					<text class="stat-label">关注</text>
@@ -23,25 +23,40 @@
 					<text class="stat-number">{{userInfo.favorites}}</text>
 					<text class="stat-label">收藏</text>
 				</view>
-			</view>
+			</view> -->
 		</view>
 		
 		<!-- 快捷功能 -->
 		<view class="quick-actions">
-			<view class="action-item" @click="goToHistory">
-				<view class="action-icon">📝</view>
-				<text class="action-text">播放历史</text>
+			<view class="action-item" @click="gotoavatar">
+				<view class="action-icon">👤</view>
+				<text class="action-text">形象库</text>
 				<text class="action-arrow">></text>
 			</view>
 			<view class="action-item" @click="goToDownloads">
-				<view class="action-icon">📥</view>
-				<text class="action-text">下载管理</text>
-				<text class="action-badge">{{downloadCount}}</text>
+				<view class="action-icon">🎙️</view>
+				<text class="action-text">声音库</text>
+				<!-- <text class="action-badge">{{downloadCount}}</text> -->
 				<text class="action-arrow">></text>
 			</view>
 			<view class="action-item" @click="goToSubscriptions">
-				<view class="action-icon">🔔</view>
-				<text class="action-text">订阅更新</text>
+				<view class="action-icon">🎬</view>
+				<text class="action-text">场景音库</text>
+				<text class="action-arrow">></text>
+			</view>
+			<view class="action-item" @click="goToSubscriptions">
+				<view class="action-icon">🎨</view>
+				<text class="action-text">我的作品</text>
+				<text class="action-arrow">></text>
+			</view>
+			<view class="action-item" @click="goToSubscriptions">
+				<view class="action-icon">📚</view>
+				<text class="action-text">使用教程</text>
+				<text class="action-arrow">></text>
+			</view>
+			<view class="action-item" @click="goToSubscriptions">
+				<view class="action-icon">🔒</view>
+				<text class="action-text">修改密码</text>
 				<text class="action-arrow">></text>
 			</view>
 		</view>
@@ -136,6 +151,8 @@
 </template>
 
 <script>
+	import Navigation from '@/utils/navigation.js'
+	
 	export default {
 		data() {
 			return {
@@ -185,12 +202,12 @@
 					icon: 'none'
 				});
 			},
-			goToHistory() {
-				uni.showToast({
-					title: '查看播放历史',
-					icon: 'none'
-				});
-			},
+			// goToHistory() {
+			// 	uni.showToast({
+			// 		title: '查看播放历史',
+			// 		icon: 'none'
+			// 	});
+			// },
 			goToDownloads() {
 				uni.showToast({
 					title: '下载管理',
@@ -291,6 +308,9 @@
 					//     url: '/pages/login/login'
 					// });
 				}, 1500);
+			},
+			gotoavatar() {
+				Navigation.goToAvatar();
 			}
 		}
 	}

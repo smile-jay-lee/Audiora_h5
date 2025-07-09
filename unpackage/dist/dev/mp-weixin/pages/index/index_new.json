@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "AI数字人",
+  "usingComponents": {
+    "uv-swiper": "../../node-modules/@climblee/uv-ui/components/uv-swiper/uv-swiper"
+  }
+}

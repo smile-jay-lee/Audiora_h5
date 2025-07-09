@@ -4,28 +4,37 @@
 		<view class="header">
 			<text class="header-title">数字人平台</text>
 			<view class="header-actions">
-				<view class="action-btn">⋯</view>
-				<view class="action-btn">—</view>
-				<view class="action-btn">⊙</view>
+				<!-- 预留按钮位置 -->
 			</view>
 		</view>
 		
-		<!-- AI横幅 -->
-		<view class="ai-banner">
-			<view class="ai-banner-bg">
-				<text class="ai-text">AI</text>
-			</view>
-			<view class="ai-indicator">
-				<view class="indicator-dot active"></view>
-				<view class="indicator-dot"></view>
-				<view class="indicator-dot"></view>
-			</view>
+		<!-- 轮播图 -->
+		<view class="swiper-wrapper">
+			<swiper 
+				class="swiper" 
+				:indicator-dots="true" 
+				:autoplay="true" 
+				:interval="3000" 
+				:duration="500"
+				:circular="true"
+				indicator-color="rgba(255, 255, 255, 0.5)"
+				indicator-active-color="#6200EA">
+				<swiper-item v-for="(item, index) in swiperList" :key="index">
+					<image 
+						:src="item" 
+						class="swiper-image"
+						mode="aspectFill"
+						@error="onImageError"
+						@load="onImageLoad">
+					</image>
+				</swiper-item>
+			</swiper>
 		</view>
 		
 		<!-- 功能模块 -->
 		<view class="function-section">
 			<view class="function-grid">
-				<view class="function-item" @click="goToFunction('video')">
+				<view class="function-item" @click="goToAvatar">
 					<view class="function-icon video-icon">
 						<text class="icon-emoji">🧍</text>
 					</view>
@@ -33,7 +42,7 @@
 					<text class="function-subtitle">表情动作 / 作态还原</text>
 				</view>
 				
-				<view class="function-item" @click="goToFunction('voice')">
+				<view class="function-item" @click="goToVoice">
 					<view class="function-icon voice-icon">
 						<text class="icon-emoji">🎙</text>
 					</view>
@@ -45,8 +54,8 @@
 					<view class="function-icon scene-icon">
 						<text class="icon-emoji">🎛</text>
 					</view>
-					<text class="function-title">素材处理</text>
-					<text class="function-subtitle">人物素材和声音编辑</text>
+					<text class="function-title">场景音库</text>
+					<text class="function-subtitle">上传场景音</text>
 				</view>
 				
 				<view class="function-item" @click="goToFunction('subtitle')">
@@ -85,34 +94,42 @@
 				</view>
 			</view>
 		</view>
-		
-		<!-- 悬浮创作按钮
-		<view class="create-float-btn" @click="startCreate">
-			<image src="/static/create-icon.png" class="create-icon"></image>
-			<text class="create-text">开始创作</text>
-		</view> -->
 	</view>
 </template>
 
 <script>
+
+	import Navigation from '@/utils/navigation.js'
+
 	export default {
 		data() {
 			return {
-				// 不再需要原有的音频播放相关数据
+				swiperList: [
+					'/static/ai_person_background.png',
+					'/static/ai_person_background.png',
+					'/static/ai_person_background.png'
+				]
 			}
 		},
 		onLoad() {
 			// 页面加载时的初始化
+			console.log('页面加载完成');
 		},
 		methods: {
+			onImageError(e) {
+				console.error('图片加载失败:', e);
+			},
+			onImageLoad(e) {
+				console.log('图片加载成功:', e);
+			},
 			goToFunction(type) {
 				switch(type) {
-					case 'video':
-						this.createAvatar();
-						break;
-					case 'voice':
-						this.createVoice();
-						break;
+					// case 'video':
+					// 	this.createAvatar();
+						// break;
+					// case 'voice':
+					// 	this.createVoice();
+					// 	break;
 					case 'scene':
 						this.processMaterial();
 						break;
@@ -121,12 +138,18 @@
 						break;
 				}
 			},
-			createAvatar() {
-				uni.showToast({
-					title: '开始创建人物形象',
-					icon: 'none'
-				});
+
+			/* 创建人物形象*/
+			gotoavatar() {
+				Navigation.goToAvatar();
 			},
+
+			// createAvatar() {
+			// 	uni.showToast({
+			// 		title: '开始创建人物形象',
+			// 		icon: 'none'
+			// 	});
+			// },
 			createVoice() {
 				uni.showToast({
 					title: '开始创建声音形象',
@@ -171,14 +194,8 @@
 					}
 				});
 			},
-			startCreate() {
-				uni.showActionSheet({
-					itemList: ['创建人物形象', '创建声音形象', '素材处理', '生成数字人'],
-					success: (res) => {
-						const types = ['video', 'voice', 'scene', 'subtitle'];
-						this.goToFunction(types[res.tapIndex]);
-					}
-				});
+			goToVoice() {
+				Navigation.goToVoice();
 			}
 		}
 	}
@@ -191,7 +208,7 @@
 		padding: 0;
 		padding-bottom: 120rpx;
 	}
-
+	
 	/* 顶部标题栏 */
 	.header {
 		display: flex;
@@ -199,6 +216,7 @@
 		align-items: center;
 		padding: 20rpx 30rpx;
 		background-color: #fff;
+		margin-bottom: 20rpx;
 	}
 
 	.header-title {
@@ -212,66 +230,23 @@
 		gap: 20rpx;
 	}
 
-	.action-btn {
-		width: 60rpx;
-		height: 60rpx;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 24rpx;
-		color: #666;
-	}
-
-	/* AI横幅 */
-	.ai-banner {
-		margin: 20rpx;
-		height: 300rpx;
-		position: relative;
-		border-radius: 20rpx;
+	/* 轮播图样式 */
+	.swiper-wrapper {
+		margin: 0 20rpx 40rpx;
+		border-radius: 15rpx;
 		overflow: hidden;
-		background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+		box-shadow: 0 8rpx 25rpx rgba(0, 0, 0, 0.1);
 	}
-
-	.ai-banner-bg {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-		background-image: 
-			radial-gradient(circle at 20% 50%, rgba(120, 220, 255, 0.3) 0%, transparent 50%),
-			radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-		display: flex;
-		align-items: center;
-		justify-content: center;
+	
+	.swiper {
+		height: 400rpx;
+		border-radius: 15rpx;
 	}
-
-	.ai-text {
-		font-size: 120rpx;
-		font-weight: bold;
-		color: rgba(255, 255, 255, 0.9);
-		text-shadow: 0 0 20rpx rgba(255, 255, 255, 0.3);
-	}
-
-	.ai-indicator {
-		position: absolute;
-		bottom: 20rpx;
-		left: 50%;
-		transform: translateX(-50%);
-		display: flex;
-		gap: 10rpx;
-	}
-
-	.indicator-dot {
-		width: 12rpx;
-		height: 12rpx;
-		border-radius: 50%;
-		background-color: rgba(255, 255, 255, 0.5);
-	}
-
-	.indicator-dot.active {
-		background-color: #fff;
+	
+	.swiper-image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
 	}
 
 	/* 功能模块 */
@@ -307,24 +282,6 @@
 		align-items: center;
 		justify-content: center;
 		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	}
-
-	.function-icon.voice-icon {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	}
-
-	.function-icon.scene-icon {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	}
-
-	.function-icon.subtitle-icon {
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-	}
-
-	.icon-img {
-		width: 60rpx;
-		height: 60rpx;
-		border-radius: 10rpx;
 	}
 
 	.icon-emoji {
@@ -465,34 +422,5 @@
 		font-size: 28rpx;
 		color: #666;
 		line-height: 1.4;
-	}
-
-	/* 悬浮创作按钮 */
-	.create-float-btn {
-		position: fixed;
-		bottom: 150rpx;
-		right: 30rpx;
-		width: 120rpx;
-		height: 120rpx;
-		border-radius: 50%;
-		background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.4);
-		z-index: 1000;
-	}
-
-	.create-icon {
-		width: 40rpx;
-		height: 40rpx;
-		margin-bottom: 8rpx;
-	}
-
-	.create-text {
-		font-size: 20rpx;
-		color: #fff;
-		font-weight: bold;
 	}
 </style>
