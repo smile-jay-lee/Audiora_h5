@@ -4,6 +4,7 @@
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
+var _e, _f, _g, _h, _i, _j, _k, _l;
 function makeMap(str, expectsLowerCase) {
   const set2 = new Set(str.split(","));
   return expectsLowerCase ? (val) => set2.has(val.toLowerCase()) : (val) => set2.has(val);
@@ -68,8 +69,8 @@ const capitalize = cacheStringFunction((str) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 });
 const toHandlerKey = cacheStringFunction((str) => {
-  const s = str ? `on${capitalize(str)}` : ``;
-  return s;
+  const s2 = str ? `on${capitalize(str)}` : ``;
+  return s2;
 });
 const hasChanged = (value, oldValue) => !Object.is(value, oldValue);
 const invokeArrayFns$1 = (fns, arg) => {
@@ -85,9 +86,59 @@ const def = (obj, key, value) => {
   });
 };
 const looseToNumber = (val) => {
-  const n = parseFloat(val);
-  return isNaN(n) ? val : n;
+  const n2 = parseFloat(val);
+  return isNaN(n2) ? val : n2;
 };
+function normalizeStyle(value) {
+  if (isArray$1(value)) {
+    const res = {};
+    for (let i = 0; i < value.length; i++) {
+      const item = value[i];
+      const normalized = isString(item) ? parseStringStyle(item) : normalizeStyle(item);
+      if (normalized) {
+        for (const key in normalized) {
+          res[key] = normalized[key];
+        }
+      }
+    }
+    return res;
+  } else if (isString(value) || isObject$1(value)) {
+    return value;
+  }
+}
+const listDelimiterRE = /;(?![^(]*\))/g;
+const propertyDelimiterRE = /:([^]+)/;
+const styleCommentRE = /\/\*[^]*?\*\//g;
+function parseStringStyle(cssText) {
+  const ret = {};
+  cssText.replace(styleCommentRE, "").split(listDelimiterRE).forEach((item) => {
+    if (item) {
+      const tmp = item.split(propertyDelimiterRE);
+      tmp.length > 1 && (ret[tmp[0].trim()] = tmp[1].trim());
+    }
+  });
+  return ret;
+}
+function normalizeClass(value) {
+  let res = "";
+  if (isString(value)) {
+    res = value;
+  } else if (isArray$1(value)) {
+    for (let i = 0; i < value.length; i++) {
+      const normalized = normalizeClass(value[i]);
+      if (normalized) {
+        res += normalized + " ";
+      }
+    }
+  } else if (isObject$1(value)) {
+    for (const name in value) {
+      if (value[name]) {
+        res += name + " ";
+      }
+    }
+  }
+  return res.trim();
+}
 const toDisplayString = (val) => {
   return isString(val) ? val : val == null ? "" : isArray$1(val) || isObject$1(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
 };
@@ -1283,6 +1334,9 @@ function isReadonly(value) {
 function isShallow(value) {
   return !!(value && value["__v_isShallow"]);
 }
+function isProxy(value) {
+  return isReactive(value) || isReadonly(value);
+}
 function toRaw(observed) {
   const raw = observed && observed["__v_raw"];
   return raw ? toRaw(raw) : observed;
@@ -1528,11 +1582,11 @@ function formatTraceEntry({ vnode, recurseCount }) {
   const close = `>` + postfix;
   return vnode.props ? [open, ...formatProps(vnode.props), close] : [open + close];
 }
-function formatProps(props) {
+function formatProps(props2) {
   const res = [];
-  const keys = Object.keys(props);
+  const keys = Object.keys(props2);
   keys.slice(0, 3).forEach((key) => {
-    res.push(...formatProp(key, props[key]));
+    res.push(...formatProp(key, props2[key]));
   });
   if (keys.length > 3) {
     res.push(` ...`);
@@ -1932,7 +1986,7 @@ function devtoolsComponentEmit(component, event, params) {
 function emit(instance, event, ...rawArgs) {
   if (instance.isUnmounted)
     return;
-  const props = instance.vnode.props || EMPTY_OBJ;
+  const props2 = instance.vnode.props || EMPTY_OBJ;
   {
     const {
       emitsOptions,
@@ -1961,9 +2015,9 @@ function emit(instance, event, ...rawArgs) {
   let args = rawArgs;
   const isModelListener2 = event.startsWith("update:");
   const modelArg = isModelListener2 && event.slice(7);
-  if (modelArg && modelArg in props) {
+  if (modelArg && modelArg in props2) {
     const modifiersKey = `${modelArg === "modelValue" ? "model" : modelArg}Modifiers`;
-    const { number: number2, trim: trim2 } = props[modifiersKey] || EMPTY_OBJ;
+    const { number: number2, trim: trim2 } = props2[modifiersKey] || EMPTY_OBJ;
     if (trim2) {
       args = rawArgs.map((a) => isString(a) ? a.trim() : a);
     }
@@ -1976,7 +2030,7 @@ function emit(instance, event, ...rawArgs) {
   }
   {
     const lowerCaseEvent = event.toLowerCase();
-    if (lowerCaseEvent !== event && props[toHandlerKey(lowerCaseEvent)]) {
+    if (lowerCaseEvent !== event && props2[toHandlerKey(lowerCaseEvent)]) {
       warn$1(
         `Event "${lowerCaseEvent}" is emitted in component ${formatComponentName(
           instance,
@@ -1988,10 +2042,10 @@ function emit(instance, event, ...rawArgs) {
     }
   }
   let handlerName;
-  let handler = props[handlerName = toHandlerKey(event)] || // also try camelCase event handler (#2249)
-  props[handlerName = toHandlerKey(camelize(event))];
+  let handler = props2[handlerName = toHandlerKey(event)] || // also try camelCase event handler (#2249)
+  props2[handlerName = toHandlerKey(camelize(event))];
   if (!handler && isModelListener2) {
-    handler = props[handlerName = toHandlerKey(hyphenate(event))];
+    handler = props2[handlerName = toHandlerKey(hyphenate(event))];
   }
   if (handler) {
     callWithAsyncErrorHandling(
@@ -2001,7 +2055,7 @@ function emit(instance, event, ...rawArgs) {
       args
     );
   }
-  const onceHandler = props[handlerName + `Once`];
+  const onceHandler = props2[handlerName + `Once`];
   if (onceHandler) {
     if (!instance.emitted) {
       instance.emitted = {};
@@ -2073,6 +2127,47 @@ function setCurrentRenderingInstance(instance) {
   currentRenderingInstance = instance;
   instance && instance.type.__scopeId || null;
   return prev;
+}
+const COMPONENTS = "components";
+function resolveComponent(name, maybeSelfReference) {
+  return resolveAsset(COMPONENTS, name, true, maybeSelfReference) || name;
+}
+function resolveAsset(type, name, warnMissing = true, maybeSelfReference = false) {
+  const instance = currentRenderingInstance || currentInstance;
+  if (instance) {
+    const Component2 = instance.type;
+    if (type === COMPONENTS) {
+      const selfName = getComponentName(
+        Component2,
+        false
+      );
+      if (selfName && (selfName === name || selfName === camelize(name) || selfName === capitalize(camelize(name)))) {
+        return Component2;
+      }
+    }
+    const res = (
+      // local registration
+      // check instance[type] first which is resolved for options API
+      resolve(instance[type] || Component2[type], name) || // global registration
+      resolve(instance.appContext[type], name)
+    );
+    if (!res && maybeSelfReference) {
+      return Component2;
+    }
+    if (warnMissing && !res) {
+      const extra = type === COMPONENTS ? `
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement.` : ``;
+      warn$1(`Failed to resolve ${type.slice(0, -1)}: ${name}${extra}`);
+    }
+    return res;
+  } else {
+    warn$1(
+      `resolve${capitalize(type.slice(0, -1))} can only be used in render() or setup().`
+    );
+  }
+}
+function resolve(registry, name) {
+  return registry && (registry[name] || registry[camelize(name)] || registry[capitalize(camelize(name))]);
 }
 const INITIAL_WATCHER_VALUE = {};
 function watch(source, cb, options) {
@@ -2606,7 +2701,7 @@ const isReservedPrefix = (key) => key === "_" || key === "$";
 const hasSetupBinding = (state, key) => state !== EMPTY_OBJ && !state.__isScriptSetup && hasOwn(state, key);
 const PublicInstanceProxyHandlers = {
   get({ _: instance }, key) {
-    const { ctx, setupState, data, props, accessCache, type, appContext } = instance;
+    const { ctx, setupState, data, props: props2, accessCache, type, appContext } = instance;
     if (key === "__isVue") {
       return true;
     }
@@ -2622,7 +2717,7 @@ const PublicInstanceProxyHandlers = {
           case 4:
             return ctx[key];
           case 3:
-            return props[key];
+            return props2[key];
         }
       } else if (hasSetupBinding(setupState, key)) {
         accessCache[key] = 1;
@@ -2636,7 +2731,7 @@ const PublicInstanceProxyHandlers = {
         (normalizedProps = instance.propsOptions[0]) && hasOwn(normalizedProps, key)
       ) {
         accessCache[key] = 3;
-        return props[key];
+        return props2[key];
       } else if (ctx !== EMPTY_OBJ && hasOwn(ctx, key)) {
         accessCache[key] = 4;
         return ctx[key];
@@ -2796,11 +2891,11 @@ function exposeSetupStateOnRenderContext(instance) {
     }
   });
 }
-function normalizePropsOrEmits(props) {
-  return isArray$1(props) ? props.reduce(
+function normalizePropsOrEmits(props2) {
+  return isArray$1(props2) ? props2.reduce(
     (normalized, p2) => (normalized[p2] = null, normalized),
     {}
-  ) : props;
+  ) : props2;
 }
 function createDuplicateChecker() {
   const cache = /* @__PURE__ */ Object.create(null);
@@ -3229,25 +3324,25 @@ function mergeWatchOptions(to, from) {
   return merged;
 }
 function initProps$1(instance, rawProps, isStateful, isSSR = false) {
-  const props = {};
+  const props2 = {};
   const attrs = {};
   instance.propsDefaults = /* @__PURE__ */ Object.create(null);
-  setFullProps(instance, rawProps, props, attrs);
+  setFullProps(instance, rawProps, props2, attrs);
   for (const key in instance.propsOptions[0]) {
-    if (!(key in props)) {
-      props[key] = void 0;
+    if (!(key in props2)) {
+      props2[key] = void 0;
     }
   }
   {
-    validateProps(rawProps || {}, props, instance);
+    validateProps(rawProps || {}, props2, instance);
   }
   if (isStateful) {
-    instance.props = isSSR ? props : shallowReactive(props);
+    instance.props = isSSR ? props2 : shallowReactive(props2);
   } else {
     if (!instance.type.props) {
       instance.props = attrs;
     } else {
-      instance.props = props;
+      instance.props = props2;
     }
   }
   instance.attrs = attrs;
@@ -3256,11 +3351,11 @@ function isInHmrContext(instance) {
 }
 function updateProps(instance, rawProps, rawPrevProps, optimized) {
   const {
-    props,
+    props: props2,
     attrs,
     vnode: { patchFlag }
   } = instance;
-  const rawCurrentProps = toRaw(props);
+  const rawCurrentProps = toRaw(props2);
   const [options] = instance.propsOptions;
   let hasAttrsChanged = false;
   if (
@@ -3285,7 +3380,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
             }
           } else {
             const camelizedKey = camelize(key);
-            props[camelizedKey] = resolvePropValue$1(
+            props2[camelizedKey] = resolvePropValue$1(
               options,
               rawCurrentProps,
               camelizedKey,
@@ -3303,7 +3398,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
       }
     }
   } else {
-    if (setFullProps(instance, rawProps, props, attrs)) {
+    if (setFullProps(instance, rawProps, props2, attrs)) {
       hasAttrsChanged = true;
     }
     let kebabKey;
@@ -3316,7 +3411,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
           if (rawPrevProps && // for camelCase
           (rawPrevProps[key] !== void 0 || // for kebab-case
           rawPrevProps[kebabKey] !== void 0)) {
-            props[key] = resolvePropValue$1(
+            props2[key] = resolvePropValue$1(
               options,
               rawCurrentProps,
               key,
@@ -3326,7 +3421,7 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
             );
           }
         } else {
-          delete props[key];
+          delete props2[key];
         }
       }
     }
@@ -3343,10 +3438,10 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
     trigger(instance, "set", "$attrs");
   }
   {
-    validateProps(rawProps || {}, props, instance);
+    validateProps(rawProps || {}, props2, instance);
   }
 }
-function setFullProps(instance, rawProps, props, attrs) {
+function setFullProps(instance, rawProps, props2, attrs) {
   const [options, needCastKeys] = instance.propsOptions;
   let hasAttrsChanged = false;
   let rawCastValues;
@@ -3359,7 +3454,7 @@ function setFullProps(instance, rawProps, props, attrs) {
       let camelKey;
       if (options && hasOwn(options, camelKey = camelize(key))) {
         if (!needCastKeys || !needCastKeys.includes(camelKey)) {
-          props[camelKey] = value;
+          props2[camelKey] = value;
         } else {
           (rawCastValues || (rawCastValues = {}))[camelKey] = value;
         }
@@ -3372,11 +3467,11 @@ function setFullProps(instance, rawProps, props, attrs) {
     }
   }
   if (needCastKeys) {
-    const rawCurrentProps = toRaw(props);
+    const rawCurrentProps = toRaw(props2);
     const castValues = rawCastValues || EMPTY_OBJ;
     for (let i = 0; i < needCastKeys.length; i++) {
       const key = needCastKeys[i];
-      props[key] = resolvePropValue$1(
+      props2[key] = resolvePropValue$1(
         options,
         rawCurrentProps,
         key,
@@ -3388,7 +3483,7 @@ function setFullProps(instance, rawProps, props, attrs) {
   }
   return hasAttrsChanged;
 }
-function resolvePropValue$1(options, props, key, value, instance, isAbsent) {
+function resolvePropValue$1(options, props2, key, value, instance, isAbsent) {
   const opt = options[key];
   if (opt != null) {
     const hasDefault = hasOwn(opt, "default");
@@ -3402,7 +3497,7 @@ function resolvePropValue$1(options, props, key, value, instance, isAbsent) {
           const reset = setCurrentInstance(instance);
           value = propsDefaults[key] = defaultValue.call(
             null,
-            props
+            props2
           );
           reset();
         }
@@ -3439,8 +3534,8 @@ function normalizePropsOptions(comp, appContext, asMixin = false) {
   if (!isFunction(comp)) {
     const extendProps = (raw2) => {
       hasExtends = true;
-      const [props, keys] = normalizePropsOptions(raw2, appContext, true);
-      extend(normalized, props);
+      const [props2, keys] = normalizePropsOptions(raw2, appContext, true);
+      extend(normalized, props2);
       if (keys)
         needCastKeys.push(...keys);
     };
@@ -3534,8 +3629,8 @@ function getTypeIndex(type, expectedTypes) {
   }
   return -1;
 }
-function validateProps(rawProps, props, instance) {
-  const resolvedValues = toRaw(props);
+function validateProps(rawProps, props2, instance) {
+  const resolvedValues = toRaw(props2);
   const options = instance.propsOptions[0];
   for (const key in options) {
     let opt = options[key];
@@ -3550,7 +3645,7 @@ function validateProps(rawProps, props, instance) {
     );
   }
 }
-function validateProp$1(name, value, prop, props, isAbsent) {
+function validateProp$1(name, value, prop, props2, isAbsent) {
   const { type, required, validator, skipCheck } = prop;
   if (required && isAbsent) {
     warn$1('Missing required prop: "' + name + '"');
@@ -3573,7 +3668,7 @@ function validateProp$1(name, value, prop, props, isAbsent) {
       return;
     }
   }
-  if (validator && !validator(value, props)) {
+  if (validator && !validator(value, props2)) {
     warn$1('Invalid prop: custom validator check failed for prop "' + name + '".');
   }
 }
@@ -3683,6 +3778,12 @@ const Comment = Symbol.for("v-cmt");
 const Static = Symbol.for("v-stc");
 function isVNode(value) {
   return value ? value.__v_isVNode === true : false;
+}
+const InternalObjectKey = `__vInternal`;
+function guardReactiveProps(props2) {
+  if (!props2)
+    return null;
+  return isProxy(props2) || InternalObjectKey in props2 ? extend({}, props2) : props2;
 }
 const emptyAppContext = createAppContext();
 let uid = 0;
@@ -3821,11 +3922,11 @@ let isInSSRComponentSetup = false;
 function setupComponent(instance, isSSR = false) {
   isSSR && setInSSRSetupState(isSSR);
   const {
-    props
+    props: props2
     /*, children*/
   } = instance.vnode;
   const isStateful = isStatefulComponent(instance);
-  initProps$1(instance, props, isStateful, isSSR);
+  initProps$1(instance, props2, isStateful, isSSR);
   const setupResult = isStateful ? setupStatefulComponent(instance, isSSR) : void 0;
   isSSR && setInSSRSetupState(false);
   return setupResult;
@@ -4494,7 +4595,7 @@ function renderComponentRoot(instance) {
     vnode,
     proxy,
     withProxy,
-    props,
+    props: props2,
     propsOptions: [propsOptions],
     slots,
     attrs,
@@ -4525,13 +4626,13 @@ function renderComponentRoot(instance) {
   const prev = setCurrentRenderingInstance(instance);
   try {
     if (vnode.shapeFlag & 4) {
-      fallthroughAttrs(inheritAttrs, props, propsOptions, attrs);
+      fallthroughAttrs(inheritAttrs, props2, propsOptions, attrs);
       const proxyToUse = withProxy || proxy;
       result = render.call(
         proxyToUse,
         proxyToUse,
         renderCache,
-        props,
+        props2,
         setupState,
         data,
         ctx
@@ -4539,13 +4640,13 @@ function renderComponentRoot(instance) {
     } else {
       fallthroughAttrs(
         inheritAttrs,
-        props,
+        props2,
         propsOptions,
         Component2.props ? attrs : getFunctionalFallthrough(attrs)
       );
       const render2 = Component2;
-      result = render2.length > 1 ? render2(props, { attrs, slots, emit: emit2 }) : render2(
-        props,
+      result = render2.length > 1 ? render2(props2, { attrs, slots, emit: emit2 }) : render2(
+        props2,
         null
         /* we know it doesn't need it */
       );
@@ -4558,8 +4659,8 @@ function renderComponentRoot(instance) {
   setCurrentRenderingInstance(prev);
   return result;
 }
-function fallthroughAttrs(inheritAttrs, props, propsOptions, fallthroughAttrs2) {
-  if (props && fallthroughAttrs2 && inheritAttrs !== false) {
+function fallthroughAttrs(inheritAttrs, props2, propsOptions, fallthroughAttrs2) {
+  if (props2 && fallthroughAttrs2 && inheritAttrs !== false) {
     const keys = Object.keys(fallthroughAttrs2).filter(
       (key) => key !== "class" && key !== "style"
     );
@@ -4569,11 +4670,11 @@ function fallthroughAttrs(inheritAttrs, props, propsOptions, fallthroughAttrs2) 
     if (propsOptions && keys.some(isModelListener)) {
       keys.forEach((key) => {
         if (!isModelListener(key) || !(key.slice(9) in propsOptions)) {
-          props[key] = fallthroughAttrs2[key];
+          props2[key] = fallthroughAttrs2[key];
         }
       });
     } else {
-      keys.forEach((key) => props[key] = fallthroughAttrs2[key]);
+      keys.forEach((key) => props2[key] = fallthroughAttrs2[key]);
     }
   }
 }
@@ -4922,6 +5023,11 @@ function initApp(app) {
   }
 }
 const propsCaches = /* @__PURE__ */ Object.create(null);
+function renderProps(props2) {
+  const { uid: uid2, __counter } = getCurrentInstance();
+  const propsId = (propsCaches[uid2] || (propsCaches[uid2] = [])).push(guardReactiveProps(props2)) - 1;
+  return uid2 + "," + propsId + "," + __counter;
+}
 function pruneComponentPropsCache(uid2) {
   delete propsCaches[uid2];
 }
@@ -4961,6 +5067,22 @@ function getCreateApp() {
   } else if (typeof my !== "undefined") {
     return my[method];
   }
+}
+function stringifyStyle(value) {
+  if (isString(value)) {
+    return value;
+  }
+  return stringify(normalizeStyle(value));
+}
+function stringify(styles) {
+  let ret = "";
+  if (!styles || isString(styles)) {
+    return ret;
+  }
+  for (const key in styles) {
+    ret += `${key.startsWith(`--`) ? key : hyphenate(key)}:${styles[key]};`;
+  }
+  return ret;
 }
 function vOn(value, key) {
   const instance = getCurrentInstance();
@@ -5088,10 +5210,18 @@ function vFor(source, renderItem) {
   }
   return ret;
 }
+function setRef(ref2, id, opts = {}) {
+  const { $templateRefs } = getCurrentInstance();
+  $templateRefs.push({ i: id, r: ref2, k: opts.k, f: opts.f });
+}
 const o = (value, key) => vOn(value, key);
 const f = (source, renderItem) => vFor(source, renderItem);
+const s = (value) => stringifyStyle(value);
 const e = (target, ...sources) => extend(target, ...sources);
+const n = (value) => normalizeClass(value);
 const t = (val) => toDisplayString(val);
+const p = (props2) => renderProps(props2);
+const sr = (ref2, id, opts) => setRef(ref2, id, opts);
 function createApp$1(rootComponent, rootProps = null) {
   rootComponent && (rootComponent.mpType = "app");
   return createVueApp(rootComponent, rootProps).use(plugin);
@@ -5413,8 +5543,8 @@ function promisify$1(name, fn) {
     if (hasCallback(args)) {
       return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
     }
-    return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
-      invokeApi(name, fn, extend(args, { success: resolve, fail: reject }), rest);
+    return wrapperReturnValue(name, handlePromise(new Promise((resolve2, reject) => {
+      invokeApi(name, fn, extend(args, { success: resolve2, fail: reject }), rest);
     })));
   };
 }
@@ -5682,8 +5812,8 @@ const $once = defineSyncApi(API_ONCE, (name, callback) => {
 const $off = defineSyncApi(API_OFF, (name, callback) => {
   if (!isArray$1(name))
     name = name ? [name] : [];
-  name.forEach((n) => {
-    eventBus.off(n, callback);
+  name.forEach((n2) => {
+    eventBus.off(n2, callback);
   });
 }, OffProtocol);
 const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
@@ -5735,7 +5865,7 @@ function invokeGetPushCidCallbacks(cid2, errMsg) {
   getPushCidCallbacks.length = 0;
 }
 const API_GET_PUSH_CLIENT_ID = "getPushClientId";
-const getPushClientId = defineAsyncApi(API_GET_PUSH_CLIENT_ID, (_, { resolve, reject }) => {
+const getPushClientId = defineAsyncApi(API_GET_PUSH_CLIENT_ID, (_, { resolve: resolve2, reject }) => {
   Promise.resolve().then(() => {
     if (typeof enabled === "undefined") {
       enabled = false;
@@ -5744,7 +5874,7 @@ const getPushClientId = defineAsyncApi(API_GET_PUSH_CLIENT_ID, (_, { resolve, re
     }
     getPushCidCallbacks.push((cid2, errMsg) => {
       if (cid2) {
-        resolve({ cid: cid2 });
+        resolve2({ cid: cid2 });
       } else {
         reject(errMsg);
       }
@@ -5813,9 +5943,9 @@ function promisify(name, api) {
     if (isFunction(options.success) || isFunction(options.fail) || isFunction(options.complete)) {
       return wrapperReturnValue(name, invokeApi(name, api, options, rest));
     }
-    return wrapperReturnValue(name, handlePromise(new Promise((resolve, reject) => {
+    return wrapperReturnValue(name, handlePromise(new Promise((resolve2, reject) => {
       invokeApi(name, api, extend({}, options, {
-        success: resolve,
+        success: resolve2,
         fail: reject
       }), rest);
     })));
@@ -6422,13 +6552,13 @@ function initRuntimeSocket(hosts, port, id) {
 }
 const SOCKET_TIMEOUT = 500;
 function tryConnectSocket(host2, port, id) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve2, reject) => {
     const socket = index$1.connectSocket({
       url: `ws://${host2}:${port}/${id}`,
       multiple: true,
       // 支付宝小程序 是否开启多实例
       fail() {
-        resolve(null);
+        resolve2(null);
       }
     });
     const timer = setTimeout(() => {
@@ -6436,19 +6566,19 @@ function tryConnectSocket(host2, port, id) {
         code: 1006,
         reason: "connect timeout"
       });
-      resolve(null);
+      resolve2(null);
     }, SOCKET_TIMEOUT);
     socket.onOpen((e2) => {
       clearTimeout(timer);
-      resolve(socket);
+      resolve2(socket);
     });
     socket.onClose((e2) => {
       clearTimeout(timer);
-      resolve(null);
+      resolve2(null);
     });
     socket.onError((e2) => {
       clearTimeout(timer);
-      resolve(null);
+      resolve2(null);
     });
   });
 }
@@ -6911,7 +7041,7 @@ function isConsoleWritable() {
   return isWritable;
 }
 function initRuntimeSocketService() {
-  const hosts = "192.168.56.1,192.168.137.1,192.168.81.1,192.168.132.186,127.0.0.1";
+  const hosts = "192.168.56.1,192.168.137.1,192.168.81.1,192.168.110.37,127.0.0.1";
   const port = "8090";
   const id = "mp-weixin_5ebg22";
   const lazy = typeof swan !== "undefined";
@@ -6987,9 +7117,9 @@ function initMiniProgramGlobalFlag() {
   }
 }
 initRuntimeSocketService();
-const _export_sfc = (sfc, props) => {
+const _export_sfc = (sfc, props2) => {
   const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props) {
+  for (const [key, val] of props2) {
     target[key] = val;
   }
   return target;
@@ -7968,11 +8098,11 @@ function buildFullPath(baseURL, requestedURL) {
   }
   return requestedURL;
 }
-function settle(resolve, reject, response) {
+function settle(resolve2, reject, response) {
   const validateStatus2 = response.config.validateStatus;
   const status = response.statusCode;
   if (status && (!validateStatus2 || validateStatus2(status))) {
-    resolve(response);
+    resolve2(response);
   } else {
     reject(response);
   }
@@ -7987,7 +8117,7 @@ const mergeKeys$1 = (keys, config2) => {
   return config3;
 };
 const adapter = (config2) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve2, reject) => {
     let fullPath = buildURL(buildFullPath(config2.baseURL, config2.url), config2.params, config2.paramsSerializer);
     const _config = {
       url: fullPath,
@@ -8010,7 +8140,7 @@ const adapter = (config2) => {
           }
         } catch (e2) {
         }
-        settle(resolve, reject, response);
+        settle(resolve2, reject, response);
       }
     };
     let requestTask;
@@ -8212,9 +8342,9 @@ var clone = function() {
       } else if (_instanceof(parent2, nativeSet)) {
         child = new nativeSet();
       } else if (_instanceof(parent2, nativePromise)) {
-        child = new nativePromise(function(resolve, reject) {
+        child = new nativePromise(function(resolve2, reject) {
           parent2.then(function(value) {
-            resolve(_clone(value, depth2 - 1));
+            resolve2(_clone(value, depth2 - 1));
           }, function(err) {
             reject(_clone(err, depth2 - 1));
           });
@@ -8736,9 +8866,9 @@ function getPx(value, unit = false) {
   return unit ? `${parseInt(value)}px` : parseInt(value);
 }
 function sleep(value = 30) {
-  return new Promise((resolve) => {
+  return new Promise((resolve2) => {
     setTimeout(() => {
-      resolve();
+      resolve2();
     }, value);
   });
 }
@@ -9069,21 +9199,21 @@ function type2icon(type = "success", fill = false) {
 }
 function priceFormat(number2, decimals = 0, decimalPoint = ".", thousandsSeparator = ",") {
   number2 = `${number2}`.replace(/[^0-9+-Ee.]/g, "");
-  const n = !isFinite(+number2) ? 0 : +number2;
+  const n2 = !isFinite(+number2) ? 0 : +number2;
   const prec = !isFinite(+decimals) ? 0 : Math.abs(decimals);
   const sep = typeof thousandsSeparator === "undefined" ? "," : thousandsSeparator;
   const dec = typeof decimalPoint === "undefined" ? "." : decimalPoint;
-  let s = "";
-  s = (prec ? round(n, prec) + "" : `${Math.round(n)}`).split(".");
+  let s2 = "";
+  s2 = (prec ? round(n2, prec) + "" : `${Math.round(n2)}`).split(".");
   const re = /(-?\d+)(\d{3})/;
-  while (re.test(s[0])) {
-    s[0] = s[0].replace(re, `$1${sep}$2`);
+  while (re.test(s2[0])) {
+    s2[0] = s2[0].replace(re, `$1${sep}$2`);
   }
-  if ((s[1] || "").length < prec) {
-    s[1] = s[1] || "";
-    s[1] += new Array(prec - s[1].length + 1).join("0");
+  if ((s2[1] || "").length < prec) {
+    s2[1] = s2[1] || "";
+    s2[1] += new Array(prec - s2[1].length + 1).join("0");
   }
-  return s.join(dec);
+  return s2.join(dec);
 }
 function getDuration(value, unit = true) {
   const valueNum = parseInt(value);
@@ -9171,7 +9301,7 @@ function getHistoryPage(back = 0) {
   return pages2[len - 1 + back];
 }
 function setConfig({
-  props = {},
+  props: props2 = {},
   config: config2 = {},
   color = {},
   zIndex = {}
@@ -9180,7 +9310,7 @@ function setConfig({
     deepMerge: deepMerge2
   } = index$1.$uv;
   index$1.$uv.config = deepMerge2(index$1.$uv.config, config2);
-  index$1.$uv.props = deepMerge2(index$1.$uv.props, props);
+  index$1.$uv.props = deepMerge2(index$1.$uv.props, props2);
   index$1.$uv.color = deepMerge2(index$1.$uv.color, color);
   index$1.$uv.zIndex = deepMerge2(index$1.$uv.zIndex, zIndex);
 }
@@ -9270,8 +9400,8 @@ class Router {
     mergeConfig2.params = params;
     mergeConfig2 = deepMerge(this.config, mergeConfig2);
     if (typeof mergeConfig2.intercept === "function") {
-      const isNext = await new Promise((resolve, reject) => {
-        mergeConfig2.intercept(mergeConfig2, resolve);
+      const isNext = await new Promise((resolve2, reject) => {
+        mergeConfig2.intercept(mergeConfig2, resolve2);
       });
       isNext && this.openPage(mergeConfig2);
     } else {
@@ -9439,13 +9569,13 @@ const mixin = {
     // 目前此方法在支付宝小程序中无法获取组件跟接点的尺寸，为支付宝的bug(2020-07-21)
     // 解决办法为在组件根部再套一个没有任何作用的view元素
     $uvGetRect(selector, all) {
-      return new Promise((resolve) => {
+      return new Promise((resolve2) => {
         index$1.createSelectorQuery().in(this)[all ? "selectAll" : "select"](selector).boundingClientRect((rect) => {
           if (all && Array.isArray(rect) && rect.length) {
-            resolve(rect);
+            resolve2(rect);
           }
           if (!all && rect) {
-            resolve(rect);
+            resolve2(rect);
           }
         }).exec();
       });
@@ -9693,12 +9823,593 @@ const install = (Vue, options = {}) => {
 const uvUI = {
   install
 };
+const props$3 = {
+  props: {
+    value: {
+      type: [String, Number],
+      default: ""
+    },
+    modelValue: {
+      type: [String, Number],
+      default: ""
+    },
+    // 输入框类型
+    // number-数字输入键盘，app-vue下可以输入浮点数，app-nvue和小程序平台下只能输入整数
+    // idcard-身份证输入键盘，微信、支付宝、百度、QQ小程序
+    // digit-带小数点的数字键盘，App的nvue页面、微信、支付宝、百度、头条、QQ小程序
+    // text-文本输入键盘
+    type: {
+      type: String,
+      default: "text"
+    },
+    // 是否禁用输入框
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    // 禁用状态时的背景色
+    disabledColor: {
+      type: String,
+      default: "#f5f7fa"
+    },
+    // 是否显示清除控件
+    clearable: {
+      type: Boolean,
+      default: false
+    },
+    // 是否密码类型
+    password: {
+      type: Boolean,
+      default: false
+    },
+    // 最大输入长度，设置为 -1 的时候不限制最大长度
+    maxlength: {
+      type: [String, Number],
+      default: -1
+    },
+    // 	输入框为空时的占位符
+    placeholder: {
+      type: String,
+      default: null
+    },
+    // 指定placeholder的样式类，注意页面或组件的style中写了scoped时，需要在类名前写/deep/
+    placeholderClass: {
+      type: String,
+      default: "input-placeholder"
+    },
+    // 指定placeholder的样式
+    placeholderStyle: {
+      type: [String, Object],
+      default: "color: #c0c4cc"
+    },
+    // 设置右下角按钮的文字，有效值：send|search|next|go|done，兼容性详见uni-app文档
+    // https://uniapp.dcloud.io/component/input
+    // https://uniapp.dcloud.io/component/textarea
+    confirmType: {
+      type: String,
+      default: "done"
+    },
+    // 点击键盘右下角按钮时是否保持键盘不收起，H5无效
+    confirmHold: {
+      type: Boolean,
+      default: false
+    },
+    // focus时，点击页面的时候不收起键盘，微信小程序有效
+    holdKeyboard: {
+      type: Boolean,
+      default: false
+    },
+    // 自动获取焦点
+    // 在 H5 平台能否聚焦以及软键盘是否跟随弹出，取决于当前浏览器本身的实现。nvue 页面不支持，需使用组件的 focus()、blur() 方法控制焦点
+    focus: {
+      type: Boolean,
+      default: false
+    },
+    // 键盘收起时，是否自动失去焦点，目前仅App3.0.0+有效
+    autoBlur: {
+      type: Boolean,
+      default: false
+    },
+    // 指定focus时光标的位置
+    cursor: {
+      type: [String, Number],
+      default: -1
+    },
+    // 输入框聚焦时底部与键盘的距离
+    cursorSpacing: {
+      type: [String, Number],
+      default: 30
+    },
+    // 光标起始位置，自动聚集时有效，需与selection-end搭配使用
+    selectionStart: {
+      type: [String, Number],
+      default: -1
+    },
+    // 光标结束位置，自动聚集时有效，需与selection-start搭配使用
+    selectionEnd: {
+      type: [String, Number],
+      default: -1
+    },
+    // 键盘弹起时，是否自动上推页面
+    adjustPosition: {
+      type: Boolean,
+      default: true
+    },
+    // 输入框内容对齐方式，可选值为：left|center|right
+    inputAlign: {
+      type: String,
+      default: "left"
+    },
+    // 输入框字体的大小
+    fontSize: {
+      type: [String, Number],
+      default: "14px"
+    },
+    // 输入框字体颜色
+    color: {
+      type: String,
+      default: "#303133"
+    },
+    // 输入框前置图标
+    prefixIcon: {
+      type: String,
+      default: ""
+    },
+    // 前置图标样式，对象或字符串
+    prefixIconStyle: {
+      type: [String, Object],
+      default: ""
+    },
+    // 输入框后置图标
+    suffixIcon: {
+      type: String,
+      default: ""
+    },
+    // 后置图标样式，对象或字符串
+    suffixIconStyle: {
+      type: [String, Object],
+      default: ""
+    },
+    // 边框类型，surround-四周边框，bottom-底部边框，none-无边框
+    border: {
+      type: String,
+      default: "surround"
+    },
+    // 是否只读，与disabled不同之处在于disabled会置灰组件，而readonly则不会
+    readonly: {
+      type: Boolean,
+      default: false
+    },
+    // 输入框形状，circle-圆形，square-方形
+    shape: {
+      type: String,
+      default: "square"
+    },
+    // 用于处理或者过滤输入框内容的方法
+    formatter: {
+      type: [Function, null],
+      default: null
+    },
+    // 是否忽略组件内对文本合成系统事件的处理
+    ignoreCompositionEvent: {
+      type: Boolean,
+      default: true
+    },
+    ...(_f = (_e = index$1.$uv) == null ? void 0 : _e.props) == null ? void 0 : _f.input
+  }
+};
+const props$2 = {
+  props: {
+    value: {
+      type: [String, Number],
+      default: ""
+    },
+    modelValue: {
+      type: [String, Number],
+      default: ""
+    },
+    // 输入框为空时占位符
+    placeholder: {
+      type: [String, Number],
+      default: ""
+    },
+    // 指定placeholder的样式类，注意页面或组件的style中写了scoped时，需要在类名前写/deep/
+    placeholderClass: {
+      type: String,
+      default: "textarea-placeholder"
+    },
+    // 指定placeholder的样式
+    placeholderStyle: {
+      type: [String, Object],
+      default: "color: #c0c4cc"
+    },
+    // 输入框高度
+    height: {
+      type: [String, Number],
+      default: 70
+    },
+    // 设置键盘右下角按钮的文字，仅微信小程序，App-vue和H5有效
+    confirmType: {
+      type: String,
+      default: "return"
+    },
+    // 是否禁用
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    // 是否显示统计字数
+    count: {
+      type: Boolean,
+      default: false
+    },
+    // 是否自动获取焦点，nvue不支持，H5取决于浏览器的实现
+    focus: {
+      type: Boolean,
+      default: false
+    },
+    // 是否自动增加高度
+    autoHeight: {
+      type: Boolean,
+      default: false
+    },
+    // 如果textarea是在一个position:fixed的区域，需要显示指定属性fixed为true
+    fixed: {
+      type: Boolean,
+      default: false
+    },
+    // 指定光标与键盘的距离
+    cursorSpacing: {
+      type: Number,
+      default: 0
+    },
+    // 指定focus时的光标位置
+    cursor: {
+      type: [String, Number],
+      default: ""
+    },
+    // 是否显示键盘上方带有”完成“按钮那一栏，
+    showConfirmBar: {
+      type: Boolean,
+      default: true
+    },
+    // 光标起始位置，自动聚焦时有效，需与selection-end搭配使用
+    selectionStart: {
+      type: Number,
+      default: -1
+    },
+    // 光标结束位置，自动聚焦时有效，需与selection-start搭配使用
+    selectionEnd: {
+      type: Number,
+      default: -1
+    },
+    // 键盘弹起时，是否自动上推页面
+    adjustPosition: {
+      type: Boolean,
+      default: true
+    },
+    // 是否去掉 iOS 下的默认内边距，只微信小程序有效
+    disableDefaultPadding: {
+      type: Boolean,
+      default: false
+    },
+    // focus时，点击页面的时候不收起键盘，只微信小程序有效
+    holdKeyboard: {
+      type: Boolean,
+      default: false
+    },
+    // 最大输入长度，设置为 -1 的时候不限制最大长度
+    maxlength: {
+      type: [String, Number],
+      default: 140
+    },
+    // 边框类型，surround-四周边框，bottom-底部边框
+    border: {
+      type: String,
+      default: "surround"
+    },
+    // 用于处理或者过滤输入框内容的方法
+    formatter: {
+      type: [Function, null],
+      default: null
+    },
+    // 是否忽略组件内对文本合成系统事件的处理
+    ignoreCompositionEvent: {
+      type: Boolean,
+      default: true
+    },
+    // 是否忽略组件内对文本合成系统事件的处理
+    confirmHold: {
+      type: Boolean,
+      default: false
+    },
+    // 文本样式
+    textStyle: {
+      type: [Object, String],
+      default: () => {
+      }
+    },
+    // 统计数字的样式
+    countStyle: {
+      type: [Object, String],
+      default: () => {
+      }
+    },
+    ...(_h = (_g = index$1.$uv) == null ? void 0 : _g.props) == null ? void 0 : _h.textarea
+  }
+};
+const props$1 = {
+  props: {
+    // 激活部分的颜色
+    activeColor: {
+      type: String,
+      default: "#19be6b"
+    },
+    inactiveColor: {
+      type: String,
+      default: "#ececec"
+    },
+    // 进度百分比，数值
+    percentage: {
+      type: [String, Number],
+      default: 0
+    },
+    // 是否在进度条内部显示百分比的值
+    showText: {
+      type: Boolean,
+      default: true
+    },
+    // 进度条的高度，单位px
+    height: {
+      type: [String, Number],
+      default: 12
+    },
+    ...(_j = (_i = index$1.$uv) == null ? void 0 : _i.props) == null ? void 0 : _j.lineProgress
+  }
+};
+const button = {
+  props: {
+    lang: String,
+    sessionFrom: String,
+    sendMessageTitle: String,
+    sendMessagePath: String,
+    sendMessageImg: String,
+    showMessageCard: Boolean,
+    appParameter: String,
+    formType: String,
+    openType: String
+  }
+};
+const openType = {
+  props: {
+    openType: String
+  },
+  emits: ["getphonenumber", "getuserinfo", "error", "opensetting", "launchapp", "contact", "chooseavatar", "addgroupapp", "chooseaddress", "subscribe", "login", "im"],
+  methods: {
+    onGetPhoneNumber(event) {
+      this.$emit("getphonenumber", event.detail);
+    },
+    onGetUserInfo(event) {
+      this.$emit("getuserinfo", event.detail);
+    },
+    onError(event) {
+      this.$emit("error", event.detail);
+    },
+    onOpenSetting(event) {
+      this.$emit("opensetting", event.detail);
+    },
+    onLaunchApp(event) {
+      this.$emit("launchapp", event.detail);
+    },
+    onContact(event) {
+      this.$emit("contact", event.detail);
+    },
+    onChooseavatar(event) {
+      this.$emit("chooseavatar", event.detail);
+    },
+    onAgreeprivacyauthorization(event) {
+      this.$emit("agreeprivacyauthorization", event.detail);
+    },
+    onAddgroupapp(event) {
+      this.$emit("addgroupapp", event.detail);
+    },
+    onChooseaddress(event) {
+      this.$emit("chooseaddress", event.detail);
+    },
+    onSubscribe(event) {
+      this.$emit("subscribe", event.detail);
+    },
+    onLogin(event) {
+      this.$emit("login", event.detail);
+    },
+    onIm(event) {
+      this.$emit("im", event.detail);
+    }
+  }
+};
+const props = {
+  props: {
+    // 是否细边框
+    hairline: {
+      type: Boolean,
+      default: true
+    },
+    // 按钮的预置样式，info，primary，error，warning，success
+    type: {
+      type: String,
+      default: "info"
+    },
+    // 按钮尺寸，large，normal，small，mini
+    size: {
+      type: String,
+      default: "normal"
+    },
+    // 按钮形状，circle（两边为半圆），square（带圆角）
+    shape: {
+      type: String,
+      default: "square"
+    },
+    // 按钮是否镂空
+    plain: {
+      type: Boolean,
+      default: false
+    },
+    // 是否禁止状态
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    // 是否加载中
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    // 加载中提示文字
+    loadingText: {
+      type: [String, Number],
+      default: ""
+    },
+    // 加载状态图标类型
+    loadingMode: {
+      type: String,
+      default: "spinner"
+    },
+    // 加载图标大小
+    loadingSize: {
+      type: [String, Number],
+      default: 14
+    },
+    // 开放能力，具体请看uniapp稳定关于button组件部分说明
+    // https://uniapp.dcloud.io/component/button
+    openType: {
+      type: String,
+      default: ""
+    },
+    // 用于 <form> 组件，点击分别会触发 <form> 组件的 submit/reset 事件
+    // 取值为submit（提交表单），reset（重置表单）
+    formType: {
+      type: String,
+      default: ""
+    },
+    // 打开 APP 时，向 APP 传递的参数，open-type=launchApp时有效
+    // 只微信小程序、QQ小程序有效
+    appParameter: {
+      type: String,
+      default: ""
+    },
+    // 指定是否阻止本节点的祖先节点出现点击态，微信小程序有效
+    hoverStopPropagation: {
+      type: Boolean,
+      default: true
+    },
+    // 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。只微信小程序有效
+    lang: {
+      type: String,
+      default: "en"
+    },
+    // 会话来源，open-type="contact"时有效。只微信小程序有效
+    sessionFrom: {
+      type: String,
+      default: ""
+    },
+    // 会话内消息卡片标题，open-type="contact"时有效
+    // 默认当前标题，只微信小程序有效
+    sendMessageTitle: {
+      type: String,
+      default: ""
+    },
+    // 会话内消息卡片点击跳转小程序路径，open-type="contact"时有效
+    // 默认当前分享路径，只微信小程序有效
+    sendMessagePath: {
+      type: String,
+      default: ""
+    },
+    // 会话内消息卡片图片，open-type="contact"时有效
+    // 默认当前页面截图，只微信小程序有效
+    sendMessageImg: {
+      type: String,
+      default: ""
+    },
+    // 是否显示会话内消息卡片，设置此参数为 true，用户进入客服会话会在右下角显示"可能要发送的小程序"提示，
+    // 用户点击后可以快速发送小程序消息，open-type="contact"时有效
+    showMessageCard: {
+      type: Boolean,
+      default: true
+    },
+    // 额外传参参数，用于小程序的data-xxx属性，通过target.dataset.name获取
+    dataName: {
+      type: String,
+      default: ""
+    },
+    // 节流，一定时间内只能触发一次
+    throttleTime: {
+      type: [String, Number],
+      default: 0
+    },
+    // 按住后多久出现点击态，单位毫秒
+    hoverStartTime: {
+      type: [String, Number],
+      default: 0
+    },
+    // 手指松开后点击态保留时间，单位毫秒
+    hoverStayTime: {
+      type: [String, Number],
+      default: 200
+    },
+    // 按钮文字，之所以通过props传入，是因为slot传入的话
+    // nvue中无法控制文字的样式
+    text: {
+      type: [String, Number],
+      default: ""
+    },
+    // 按钮图标
+    icon: {
+      type: String,
+      default: ""
+    },
+    // 按钮图标大小
+    iconSize: {
+      type: [String, Number],
+      default: ""
+    },
+    // 按钮图标颜色
+    iconColor: {
+      type: String,
+      default: "#000000"
+    },
+    // 按钮颜色，支持传入linear-gradient渐变色
+    color: {
+      type: String,
+      default: ""
+    },
+    // 自定义按钮文本样式
+    customTextStyle: {
+      type: [Object, String],
+      default: ""
+    },
+    ...(_l = (_k = index$1.$uv) == null ? void 0 : _k.props) == null ? void 0 : _l.button
+  }
+};
 exports._export_sfc = _export_sfc;
+exports.button = button;
 exports.createSSRApp = createSSRApp;
 exports.e = e;
 exports.f = f;
 exports.index = index$1;
+exports.mixin = mixin;
+exports.mpMixin = mpMixin;
+exports.n = n;
 exports.o = o;
+exports.openType = openType;
+exports.p = p;
+exports.props = props$3;
+exports.props$1 = props$2;
+exports.props$2 = props$1;
+exports.props$3 = props;
+exports.resolveComponent = resolveComponent;
+exports.s = s;
+exports.sr = sr;
 exports.t = t;
+exports.throttle = throttle;
 exports.uvUI = uvUI;
 //# sourceMappingURL=../../.sourcemap/mp-weixin/common/vendor.js.map

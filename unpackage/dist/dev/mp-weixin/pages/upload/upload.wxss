@@ -1,0 +1,256 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.upload-container.data-v-aa5cff34 {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #F8F9FA 0%, #FFFFFF 100%);
+  padding-bottom: 100px;
+}
+.header.data-v-aa5cff34 {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.95);
+  -webkit-backdrop-filter: blur(10px);
+          backdrop-filter: blur(10px);
+}
+.header .header-content.data-v-aa5cff34 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 16px;
+}
+.header .header-content .back-btn.data-v-aa5cff34, .header .header-content .menu-btn.data-v-aa5cff34 {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.05);
+}
+.header .header-content .back-btn .back-icon.data-v-aa5cff34, .header .header-content .back-btn .menu-icon.data-v-aa5cff34, .header .header-content .menu-btn .back-icon.data-v-aa5cff34, .header .header-content .menu-btn .menu-icon.data-v-aa5cff34 {
+  font-size: 18px;
+  color: #333;
+}
+.header .header-content .title.data-v-aa5cff34 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+.content.data-v-aa5cff34 {
+  padding: 0 16px;
+}
+.name-section.data-v-aa5cff34 {
+  margin: 20px 0;
+}
+.name-section .label.data-v-aa5cff34 {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.name-section .label .required.data-v-aa5cff34 {
+  color: #EF4444;
+  font-size: 16px;
+  margin-right: 4px;
+}
+.name-section .label .label-text.data-v-aa5cff34 {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+}
+.name-section .input-wrapper.data-v-aa5cff34 {
+  background: #FFFFFF;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+}
+.config-section.data-v-aa5cff34 {
+  margin: 20px 0 16px;
+}
+.config-section .config-title.data-v-aa5cff34 {
+  display: flex;
+  align-items: center;
+}
+.config-section .config-title .title-bar.data-v-aa5cff34 {
+  width: 4px;
+  height: 20px;
+  background: #6366F1;
+  border-radius: 2px;
+  margin-right: 8px;
+}
+.config-section .config-title .title-text.data-v-aa5cff34 {
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+.upload-area.data-v-aa5cff34 {
+  margin: 16px 0 24px;
+}
+.upload-area .upload-content.data-v-aa5cff34 {
+  background: #FFFFFF;
+  border: 2px dashed #D1D5DB;
+  border-radius: 12px;
+  min-height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.upload-area .upload-content .upload-placeholder.data-v-aa5cff34 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+}
+.upload-area .upload-content .upload-placeholder .upload-icon.data-v-aa5cff34 {
+  position: relative;
+  margin-bottom: 16px;
+}
+.upload-area .upload-content .upload-placeholder .upload-icon .icon.data-v-aa5cff34 {
+  font-size: 48px;
+  color: #6366F1;
+}
+.upload-area .upload-content .upload-placeholder .upload-icon .arrow.data-v-aa5cff34 {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  font-size: 20px;
+  color: #6366F1;
+}
+.upload-area .upload-content .upload-placeholder .upload-text.data-v-aa5cff34 {
+  text-align: center;
+}
+.upload-area .upload-content .upload-placeholder .upload-text .main-text.data-v-aa5cff34 {
+  display: block;
+  font-size: 18px;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.upload-area .upload-content .upload-placeholder .upload-text .sub-text.data-v-aa5cff34 {
+  font-size: 14px;
+  color: #9CA3AF;
+}
+.upload-area .upload-content .file-preview.data-v-aa5cff34 {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.upload-area .upload-content .file-preview .preview-image.data-v-aa5cff34, .upload-area .upload-content .file-preview .preview-video.data-v-aa5cff34 {
+  max-width: 100%;
+  max-height: 250px;
+  border-radius: 8px;
+}
+.upload-area .upload-content .file-preview .audio-preview.data-v-aa5cff34, .upload-area .upload-content .file-preview .file-info.data-v-aa5cff34 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.upload-area .upload-content .file-preview .audio-preview .audio-icon.data-v-aa5cff34, .upload-area .upload-content .file-preview .audio-preview .file-icon.data-v-aa5cff34, .upload-area .upload-content .file-preview .file-info .audio-icon.data-v-aa5cff34, .upload-area .upload-content .file-preview .file-info .file-icon.data-v-aa5cff34 {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+.upload-area .upload-content .file-preview .audio-preview .audio-name.data-v-aa5cff34, .upload-area .upload-content .file-preview .audio-preview .file-name.data-v-aa5cff34, .upload-area .upload-content .file-preview .file-info .audio-name.data-v-aa5cff34, .upload-area .upload-content .file-preview .file-info .file-name.data-v-aa5cff34 {
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+  word-break: break-all;
+}
+.upload-area .upload-content .file-preview .delete-btn.data-v-aa5cff34 {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.upload-area .upload-content .file-preview .delete-btn .delete-icon.data-v-aa5cff34 {
+  color: #FFFFFF;
+  font-size: 16px;
+}
+.requirements.data-v-aa5cff34 {
+  margin: 24px 0;
+}
+.requirements .requirement-grid.data-v-aa5cff34 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+}
+.requirements .requirement-grid .requirement-item.data-v-aa5cff34 {
+  display: flex;
+  align-items: center;
+}
+.requirements .requirement-grid .requirement-item .req-label.data-v-aa5cff34 {
+  font-size: 14px;
+  color: #6B7280;
+  margin-right: 8px;
+  white-space: nowrap;
+}
+.requirements .requirement-grid .requirement-item .req-value.data-v-aa5cff34 {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+.tips.data-v-aa5cff34 {
+  margin: 24px 0;
+}
+.tips .tip-item.data-v-aa5cff34 {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.tips .tip-item .tip-icon.data-v-aa5cff34 {
+  color: #6366F1;
+  font-size: 14px;
+  margin-right: 8px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.tips .tip-item .tip-text.data-v-aa5cff34 {
+  font-size: 14px;
+  color: #4B5563;
+  line-height: 1.5;
+  flex: 1;
+}
+.bottom-action.data-v-aa5cff34 {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  padding: 16px;
+  border-top: 1px solid #E5E7EB;
+  z-index: 100;
+}

@@ -24,7 +24,12 @@ export default {
     // 跳转到AI创作
     goToAICreate() {
         uni.navigateTo({
-            url: '/pages/ai-create/ai-create'
+            url: '/pages/create/create'
+        });
+    },
+    gotoCreate() {
+        uni.navigateTo({
+            url: '/pages/create/create'
         });
     }
 }

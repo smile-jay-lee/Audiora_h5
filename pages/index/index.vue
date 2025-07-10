@@ -58,7 +58,7 @@
 					<text class="function-subtitle">上传场景音</text>
 				</view>
 				
-				<view class="function-item" @click="goToFunction('subtitle')">
+				<view class="function-item" @click="gotoCreate">
 					<view class="function-icon subtitle-icon">
 						<text class="icon-emoji">🎬</text>
 					</view>
@@ -82,7 +82,8 @@
 					</view>
 					<view class="video-actions">
 						<view class="action-download" @click="downloadVideo">
-							<text class="action-icon">📥</text>
+							<!-- <text class="action-icon">📥</text> -->
+							 <uni-icons type="download" size="24"></uni-icons>
 						</view>
 						<view class="action-delete" @click="deleteVideo">
 							<text class="action-icon">🗑️</text>
@@ -133,9 +134,9 @@
 					// case 'scene':
 					// 	this.processMaterial();
 					// 	break;
-					case 'subtitle':
-						this.generateDigitalHuman();
-						break;
+					// case 'subtitle':
+					// 	this.generateDigitalHuman();
+					// 	// break;
 				}
 			},
 
@@ -199,6 +200,9 @@
 			},
 			gotoSoundLibrary() {
 				Navigation.goToSoundLibrary();
+			},
+			gotoCreate() {
+				Navigation.gotoCreate();
 			}
 		}
 	}

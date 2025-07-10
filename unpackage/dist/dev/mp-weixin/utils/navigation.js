@@ -22,7 +22,12 @@ const Navigation = {
   // 跳转到AI创作
   goToAICreate() {
     common_vendor.index.navigateTo({
-      url: "/pages/ai-create/ai-create"
+      url: "/pages/create/create"
+    });
+  },
+  gotoCreate() {
+    common_vendor.index.navigateTo({
+      url: "/pages/create/create"
     });
   }
 };

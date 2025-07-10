@@ -13,21 +13,16 @@ const _sfc_main = {
     };
   },
   onLoad() {
-    common_vendor.index.__f__("log", "at pages/index/index.vue:116", "页面加载完成");
+    common_vendor.index.__f__("log", "at pages/index/index.vue:117", "页面加载完成");
   },
   methods: {
     onImageError(e) {
-      common_vendor.index.__f__("error", "at pages/index/index.vue:120", "图片加载失败:", e);
+      common_vendor.index.__f__("error", "at pages/index/index.vue:121", "图片加载失败:", e);
     },
     onImageLoad(e) {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:123", "图片加载成功:", e);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:124", "图片加载成功:", e);
     },
     goToFunction(type) {
-      switch (type) {
-        case "subtitle":
-          this.generateDigitalHuman();
-          break;
-      }
     },
     /* 创建人物形象*/
     gotoavatar() {
@@ -88,9 +83,20 @@ const _sfc_main = {
     },
     gotoSoundLibrary() {
       utils_navigation.Navigation.goToSoundLibrary();
+    },
+    gotoCreate() {
+      utils_navigation.Navigation.gotoCreate();
     }
   }
 };
+if (!Array) {
+  const _easycom_uni_icons2 = common_vendor.resolveComponent("uni-icons");
+  _easycom_uni_icons2();
+}
+const _easycom_uni_icons = () => "../../uni_modules/uni-icons/components/uni-icons/uni-icons.js";
+if (!Math) {
+  _easycom_uni_icons();
+}
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
     a: common_vendor.f($data.swiperList, (item, index, i0) => {
@@ -104,11 +110,15 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     b: common_vendor.o((...args) => $options.gotoavatar && $options.gotoavatar(...args)),
     c: common_vendor.o((...args) => $options.goToVoice && $options.goToVoice(...args)),
     d: common_vendor.o((...args) => $options.gotoSoundLibrary && $options.gotoSoundLibrary(...args)),
-    e: common_vendor.o(($event) => $options.goToFunction("subtitle")),
+    e: common_vendor.o((...args) => $options.gotoCreate && $options.gotoCreate(...args)),
     f: common_assets._imports_0,
     g: common_vendor.o((...args) => $options.playVideo && $options.playVideo(...args)),
-    h: common_vendor.o((...args) => $options.downloadVideo && $options.downloadVideo(...args)),
-    i: common_vendor.o((...args) => $options.deleteVideo && $options.deleteVideo(...args))
+    h: common_vendor.p({
+      type: "download",
+      size: "24"
+    }),
+    i: common_vendor.o((...args) => $options.downloadVideo && $options.downloadVideo(...args)),
+    j: common_vendor.o((...args) => $options.deleteVideo && $options.deleteVideo(...args))
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-1cf27b2a"]]);

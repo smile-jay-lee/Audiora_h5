@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "创建数字人",
+  "usingComponents": {
+    "u-input": "../../node-modules/@climblee/uv-ui/components/uv-input/uv-input",
+    "u-textarea": "../../node-modules/@climblee/uv-ui/components/uv-textarea/uv-textarea",
+    "u-line-progress": "../../node-modules/@climblee/uv-ui/components/uv-line-progress/uv-line-progress",
+    "u-button": "../../node-modules/@climblee/uv-ui/components/uv-button/uv-button",
+    "u-popup": "../../node-modules/@climblee/uv-ui/components/uv-popup/uv-popup",
+    "u-toast": "../../node-modules/@climblee/uv-ui/components/uv-toast/uv-toast"
+  }
+}

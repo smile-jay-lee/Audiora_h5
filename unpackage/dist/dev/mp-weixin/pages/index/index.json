@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "AI数字人",
-  "usingComponents": {}
+  "usingComponents": {
+    "uni-icons": "../../uni_modules/uni-icons/components/uni-icons/uni-icons"
+  }
 }

@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "形象库",
-  "usingComponents": {}
+  "usingComponents": {
+    "upload-component": "../../components/upload"
+  }
 }

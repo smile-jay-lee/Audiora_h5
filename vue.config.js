@@ -1,4 +1,4 @@
  // 在根目录创建 vue.config.js 文件，并配置如下
  module.exports = {
-    transpileDependencies: ['@climblee/uv-ui']
+    transpileDependencies: ['@climblee/uv-ui', '@dcloudio/uni-ui']
  }

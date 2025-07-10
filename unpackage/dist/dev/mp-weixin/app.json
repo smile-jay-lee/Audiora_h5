@@ -6,7 +6,9 @@
     "pages/my/my",
     "pages/avatar/avatar",
     "pages/voice/voice",
-    "pages/sound_library/sound_library"
+    "pages/sound_library/sound_library",
+    "pages/create/create",
+    "pages/upload/upload"
   ],
   "window": {
     "navigationBarTextStyle": "black",

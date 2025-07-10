@@ -9,6 +9,8 @@ if (!Math) {
   "./pages/avatar/avatar.js";
   "./pages/voice/voice.js";
   "./pages/sound_library/sound_library.js";
+  "./pages/create/create.js";
+  "./pages/upload/upload.js";
 }
 const _sfc_main = {
   onLaunch: function() {
