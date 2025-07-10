@@ -34,7 +34,7 @@
 		<!-- 功能模块 -->
 		<view class="function-section">
 			<view class="function-grid">
-				<view class="function-item" @click="goToAvatar">
+				<view class="function-item" @click="gotoavatar">
 					<view class="function-icon video-icon">
 						<text class="icon-emoji">🧍</text>
 					</view>
@@ -50,7 +50,7 @@
 					<text class="function-subtitle">上传音频 / 克隆声音</text>
 				</view>
 				
-				<view class="function-item" @click="goToFunction('scene')">
+				<view class="function-item" @click="gotoSoundLibrary">
 					<view class="function-icon scene-icon">
 						<text class="icon-emoji">🎛</text>
 					</view>
@@ -130,9 +130,9 @@
 					// case 'voice':
 					// 	this.createVoice();
 					// 	break;
-					case 'scene':
-						this.processMaterial();
-						break;
+					// case 'scene':
+					// 	this.processMaterial();
+					// 	break;
 					case 'subtitle':
 						this.generateDigitalHuman();
 						break;
@@ -150,18 +150,18 @@
 			// 		icon: 'none'
 			// 	});
 			// },
-			createVoice() {
-				uni.showToast({
-					title: '开始创建声音形象',
-					icon: 'none'
-				});
-			},
-			processMaterial() {
-				uni.showToast({
-					title: '开始素材处理',
-					icon: 'none'
-				});
-			},
+			// createVoice() {
+			// 	uni.showToast({
+			// 		title: '开始创建声音形象',
+			// 		icon: 'none'
+			// 	});
+			// },
+			// processMaterial() {
+			// 	uni.showToast({
+			// 		title: '开始素材处理',
+			// 		icon: 'none'
+			// 	});
+			// },
 			generateDigitalHuman() {
 				uni.showToast({
 					title: '开始生成数字人',
@@ -196,6 +196,9 @@
 			},
 			goToVoice() {
 				Navigation.goToVoice();
+			},
+			gotoSoundLibrary() {
+				Navigation.goToSoundLibrary();
 			}
 		}
 	}

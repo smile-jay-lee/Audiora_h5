@@ -14,9 +14,9 @@ const Navigation = {
     });
   },
   // 跳转到场景音库
-  goToScene() {
+  goToSoundLibrary() {
     common_vendor.index.navigateTo({
-      url: "/pages/scene/scene"
+      url: "/pages/sound_library/sound_library"
     });
   },
   // 跳转到AI创作

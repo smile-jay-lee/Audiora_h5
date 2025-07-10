@@ -8,6 +8,7 @@ if (!Math) {
   "./pages/my/my.js";
   "./pages/avatar/avatar.js";
   "./pages/voice/voice.js";
+  "./pages/sound_library/sound_library.js";
 }
 const _sfc_main = {
   onLaunch: function() {

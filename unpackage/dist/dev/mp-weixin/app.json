@@ -5,7 +5,8 @@
     "pages/ai-create/ai-create",
     "pages/my/my",
     "pages/avatar/avatar",
-    "pages/voice/voice"
+    "pages/voice/voice",
+    "pages/sound_library/sound_library"
   ],
   "window": {
     "navigationBarTextStyle": "black",

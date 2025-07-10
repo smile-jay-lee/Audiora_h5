@@ -15,9 +15,9 @@ export default {
     },
     
     // 跳转到场景音库
-    goToScene() {
+    goToSoundLibrary() {
         uni.navigateTo({
-            url: '/pages/scene/scene'
+            url: '/pages/sound_library/sound_library'
         });
     },
     

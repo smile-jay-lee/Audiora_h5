@@ -2,6 +2,7 @@
 	"easycom": {
 		"autoscan": true,
 		"custom": {
+			"^u-(.*)": "@climblee/uv-ui/components/uv-$1/uv-$1.vue",
 			"^uv-(.*)": "@climblee/uv-ui/components/uv-$1/uv-$1.vue"
 		}
 	},
@@ -29,7 +30,7 @@
 			"style": {
 				"navigationBarTitleText": "我的"
 			}
-		}.
+		},
 		{
             "path": "pages/avatar/avatar",
             "style": {
@@ -40,6 +41,12 @@
 			"path": "pages/voice/voice",
 			"style": {
 				"navigationBarTitleText": "语音合成"
+			}
+		},
+		{
+			"path": "pages/sound_library/sound_library",
+			"style": {
+				"navigationBarTitleText": "音库"
 			}
 		}
 	],

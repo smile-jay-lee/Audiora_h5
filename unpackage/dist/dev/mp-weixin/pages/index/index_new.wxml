@@ -1,1 +1,0 @@
-<view class="container data-v-ed6d699a"><view class="debug-info data-v-ed6d699a"><text class="data-v-ed6d699a">页面加载成功</text><text class="data-v-ed6d699a">组件测试</text></view><view class="swiper-wrapper data-v-ed6d699a"><uv-swiper wx:if="{{a}}" class="data-v-ed6d699a" u-i="ed6d699a-0" bind:__l="__l" u-p="{{a}}"></uv-swiper></view></view>

@@ -1,0 +1,17 @@
+{
+  "navigationBarTitleText": "语音存储",
+  "usingComponents": {
+    "uv-icon": "../../uni_modules/uv-icon/components/uv-icon/uv-icon",
+    "uv-navbar": "../../uni_modules/uv-navbar/components/uv-navbar/uv-navbar",
+    "uv-tabs": "../../uni_modules/uv-tabs/components/uv-tabs/uv-tabs",
+    "uv-empty": "../../uni_modules/uv-empty/components/uv-empty/uv-empty",
+    "uv-button": "../../uni_modules/uv-button/components/uv-button/uv-button",
+    "uv-tags": "../../uni_modules/uv-tags/components/uv-tags/uv-tags",
+    "uv-popup": "../../uni_modules/uv-popup/components/uv-popup/uv-popup",
+    "uv-input": "../../uni_modules/uv-input/components/uv-input/uv-input",
+    "uv-form-item": "../../uni_modules/uv-form/components/uv-form-item/uv-form-item",
+    "uv-picker": "../../uni_modules/uv-picker/components/uv-picker/uv-picker",
+    "uv-form": "../../uni_modules/uv-form/components/uv-form/uv-form",
+    "uv-slider": "../../uni_modules/uv-slider/components/uv-slider/uv-slider"
+  }
+}

@@ -24,9 +24,6 @@ const _sfc_main = {
     },
     goToFunction(type) {
       switch (type) {
-        case "scene":
-          this.processMaterial();
-          break;
         case "subtitle":
           this.generateDigitalHuman();
           break;
@@ -42,18 +39,18 @@ const _sfc_main = {
     // 		icon: 'none'
     // 	});
     // },
-    createVoice() {
-      common_vendor.index.showToast({
-        title: "开始创建声音形象",
-        icon: "none"
-      });
-    },
-    processMaterial() {
-      common_vendor.index.showToast({
-        title: "开始素材处理",
-        icon: "none"
-      });
-    },
+    // createVoice() {
+    // 	uni.showToast({
+    // 		title: '开始创建声音形象',
+    // 		icon: 'none'
+    // 	});
+    // },
+    // processMaterial() {
+    // 	uni.showToast({
+    // 		title: '开始素材处理',
+    // 		icon: 'none'
+    // 	});
+    // },
     generateDigitalHuman() {
       common_vendor.index.showToast({
         title: "开始生成数字人",
@@ -88,6 +85,9 @@ const _sfc_main = {
     },
     goToVoice() {
       utils_navigation.Navigation.goToVoice();
+    },
+    gotoSoundLibrary() {
+      utils_navigation.Navigation.goToSoundLibrary();
     }
   }
 };
@@ -101,9 +101,9 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         d: index
       };
     }),
-    b: common_vendor.o((...args) => _ctx.goToAvatar && _ctx.goToAvatar(...args)),
+    b: common_vendor.o((...args) => $options.gotoavatar && $options.gotoavatar(...args)),
     c: common_vendor.o((...args) => $options.goToVoice && $options.goToVoice(...args)),
-    d: common_vendor.o(($event) => $options.goToFunction("scene")),
+    d: common_vendor.o((...args) => $options.gotoSoundLibrary && $options.gotoSoundLibrary(...args)),
     e: common_vendor.o(($event) => $options.goToFunction("subtitle")),
     f: common_assets._imports_0,
     g: common_vendor.o((...args) => $options.playVideo && $options.playVideo(...args)),
