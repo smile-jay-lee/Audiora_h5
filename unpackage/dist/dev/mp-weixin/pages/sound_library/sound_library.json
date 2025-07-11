@@ -2,6 +2,7 @@
   "navigationBarTitleText": "音库",
   "usingComponents": {
     "uni-icons": "../../uni_modules/uni-icons/components/uni-icons/uni-icons",
+    "u-icon": "../../node-modules/@climblee/uv-ui/components/uv-icon/uv-icon",
     "uv-icon": "../../uni_modules/uv-icon/components/uv-icon/uv-icon"
   }
 }

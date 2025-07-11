@@ -10,7 +10,7 @@
 		align-items: center;
 		padding: 30rpx;
 		background-color: white;
-		border-bottom: 1rpx solid #eee;
+		/* border-bottom: 1rpx solid #eee; */
 }
 .header-title.data-v-c8c0509f {
 		font-size: 40rpx;
@@ -24,6 +24,7 @@
 .upload-btn.data-v-c8c0509f {
 		display: flex;
 		align-items: center;
+		justify-content: center;
 		background:  #9c7af0;
 		color: white;
 		border-radius: 25rpx;
@@ -167,14 +168,16 @@
 .action-btn.data-v-c8c0509f:active {
 		transform: scale(0.95);
 }
-.action-btn.download.data-v-c8c0509f {
+	
+	/* .action-btn.download {
 		background-color: #9c7af0;
-}
-.action-btn.edit.data-v-c8c0509f {
+	}
+	
+	.action-btn.edit {
 		background-color: #9c7af0;
-}
+	} */
 .action-btn.delete.data-v-c8c0509f {
-		background-color: #9c7af0;
+		background-color: #f55050;
 }
 .action-icon.data-v-c8c0509f {
 		font-size: 30rpx;

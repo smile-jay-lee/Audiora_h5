@@ -4,7 +4,8 @@
 		<view class="page-header">
 			<view class="header-title">音频库</view>
 			<view class="header-actions">
-				<view class="upload-btn" @click="startRecording">
+				<!-- <view class="upload-btn" @click="startRecording"> -->
+				<view class="upload-btn" @click="uploadAudio">
                     <text class="upload-text">上传</text>
 					<uni-icons type="cloud-upload" color="#ffffff" size="24"></uni-icons>
 				</view>
@@ -12,7 +13,7 @@
 		</view>
 		
 		<!-- 筛选栏 -->
-		<view class="filter-bar">
+		<!-- <view class="filter-bar"> -->
 			<!-- <view class="filter-item" :class="{active: currentFilter === 'all'}" @click="filterAudio('all')">
 				<text class="filter-text">全部</text>
 			</view> -->
@@ -25,7 +26,7 @@
 			<view class="filter-item" :class="{active: currentFilter === 'effect'}" @click="filterAudio('effect')">
 				<text class="filter-text">音效</text>
 			</view> -->
-		</view>
+		<!-- </view> -->
 		
 		<!-- 音频列表 -->
 		<view class="audio-list">
@@ -34,8 +35,8 @@
 					<view class="audio-cover">
 						<image :src="audio.cover" class="cover-image" mode="aspectFill"></image>
 						<view class="play-overlay" @click="playAudio(audio)">
-							<text class="play-icon" v-if="!audio.playing">▶</text>
-							<text class="pause-icon" v-else>⏸</text>
+							<u-icon v-if="!audio.playing" name="play-circle" color="#ffffff"  size="40" @click="playAudio"></u-icon>
+							<u-icon v-else name="pause-circle" color="#ffffff" size="40" @click="pauseAudio"></u-icon>
 						</view>
 					</view>
 					
@@ -195,62 +196,188 @@ import UniIcons from '../../uni_modules/uni-icons/components/uni-icons/uni-icons
 			},
 			
 			uploadAudio() {
-				uni.chooseFile({
-					count: 5,
-					type: 'custom',
-					extension: ['.mp3', '.wav', '.m4a', '.aac', '.flac'],
-					success: (res) => {
-						this.showUploadModal = true;
-						this.simulateUpload(res.tempFilePaths);
-					},
-					fail: (err) => {
-						uni.showToast({
-							title: '选择文件失败',
-							icon: 'none'
-						});
-					}
-				});
-			},
-			
-			simulateUpload(files) {
-				this.uploadProgress = 0;
-				this.uploadStatus = '正在上传...';
-				
-				const timer = setInterval(() => {
-					this.uploadProgress += 10;
-					if (this.uploadProgress >= 100) {
-						clearInterval(timer);
-						this.uploadStatus = '上传完成！';
-						setTimeout(() => {
-							this.closeUploadModal();
-							this.addNewAudio(files);
-						}, 1000);
-					}
-				}, 200);
-			},
-			
-			addNewAudio(files) {
-				files.forEach((file, index) => {
-					const newAudio = {
-						id: Date.now() + index,
-						title: `新音频文件${this.audioList.length + index + 1}`,
-						duration: '00:00',
-						size: '未知',
-						uploadDate: new Date().toISOString().split('T')[0],
-						type: 'voice',
-						typeText: '人声',
-						cover: '/static/default_audio_cover.png',
-						playing: false
-					};
-					this.audioList.unshift(newAudio);
-				});
-				
-				uni.showToast({
-					title: '上传成功',
-					icon: 'success'
-				});
-			},
-			
+    // 显示选择操作的弹窗
+    uni.showActionSheet({
+        itemList: ['选择本地文件', '选择聊天窗口中的音频', '开始录制'],
+        success: (res) => {
+            switch(res.tapIndex) {
+                case 0:
+                    this.chooseLocalFile();
+                    break;
+                case 1:
+                    this.chooseChatAudio();
+                    break;
+                case 2:
+                    this.startRecording();
+                    break;
+            }
+        },
+        fail: (err) => {
+            console.log('用户取消选择');
+        }
+    });
+},
+
+chooseLocalFile() {
+    // 在小程序中使用 chooseMedia 选择本地文件
+    uni.chooseMedia({
+        count: 5,
+        mediaType: ['video', 'audio'],
+        sourceType: ['album', 'camera'], // 从相册或拍摄
+        success: (res) => {
+            this.showUploadModal = true;
+            // 注意：tempFiles 替代 tempFilePaths
+            this.simulateUpload(res.tempFiles.map(file => file.tempFilePath));
+        },
+        fail: (err) => {
+            uni.showToast({
+                title: '选择文件失败',
+                icon: 'none'
+            });
+        }
+    });
+},
+
+chooseChatAudio() {
+    // 这里可以跳转到聊天记录页面或者显示聊天记录中的音频列表
+    uni.showModal({
+        title: '选择聊天音频',
+        content: '即将跳转到聊天记录，选择音频文件',
+        success: (res) => {
+            if (res.confirm) {
+                // 跳转到聊天记录页面
+                uni.navigateTo({
+                    url: '/pages/chat/chat?selectMode=audio'
+                });
+                
+                // 或者显示聊天音频列表弹窗
+                // this.showChatAudioModal = true;
+            }
+        }
+    });
+},
+
+startRecording() {
+    uni.showModal({
+        title: '开始录制',
+        content: '即将开始录制音频，请准备好麦克风',
+        success: (res) => {
+            if (res.confirm) {
+                this.startAudioRecording();
+            }
+        }
+    });
+},
+
+startAudioRecording() {
+    // 获取录音管理器
+    const recorderManager = uni.getRecorderManager();
+    
+    // 录音配置
+    const options = {
+        duration: 60000, // 录音时长，单位 ms，最大值 600000（10分钟）
+        sampleRate: 16000, // 采样率
+        numberOfChannels: 1, // 录音通道数
+        encodeBitRate: 96000, // 编码码率
+        format: 'mp3', // 音频格式
+        frameSize: 50 // 指定帧大小，单位 KB
+    };
+    
+    // 开始录音
+    recorderManager.start(options);
+    
+    // 显示录音状态
+    uni.showLoading({
+        title: '录音中...',
+        mask: true
+    });
+    
+    // 监听录音开始
+    recorderManager.onStart(() => {
+        console.log('录音开始');
+        uni.showToast({
+            title: '录音开始',
+            icon: 'none'
+        });
+    });
+    
+    // 监听录音结束
+    recorderManager.onStop((res) => {
+        console.log('录音结束', res);
+        uni.hideLoading();
+        
+        // 显示录音结果
+        uni.showModal({
+            title: '录音完成',
+            content: `录音时长: ${Math.floor(res.duration / 1000)}秒\n文件大小: ${(res.fileSize / 1024).toFixed(2)}KB`,
+            confirmText: '保存',
+            cancelText: '重录',
+            success: (modalRes) => {
+                if (modalRes.confirm) {
+                    // 保存录音文件
+                    this.saveRecordedAudio(res);
+                } else {
+                    // 重新录制
+                    this.startAudioRecording();
+                }
+            }
+        });
+    });
+    
+    // 监听录音错误
+    recorderManager.onError((err) => {
+        console.error('录音错误:', err);
+        uni.hideLoading();
+        uni.showToast({
+            title: '录音失败',
+            icon: 'none'
+        });
+    });
+    
+    // 设置录音自动停止（可选）
+    setTimeout(() => {
+        recorderManager.stop();
+    }, 60000); // 60秒后自动停止
+},
+
+saveRecordedAudio(recordResult) {
+    // 显示上传进度
+    this.showUploadModal = true;
+    this.uploadStatus = '正在保存录音...';
+    
+    // 模拟保存过程
+    this.simulateUpload([recordResult.tempFilePath]);
+    
+    // 添加录音信息到列表
+    const newAudio = {
+        id: Date.now(),
+        title: `录音_${new Date().toLocaleTimeString()}`,
+        duration: this.formatDuration(recordResult.duration),
+        size: this.formatFileSize(recordResult.fileSize),
+        uploadDate: new Date().toISOString().split('T')[0],
+        type: 'voice',
+        typeText: '人声',
+        cover: '/static/default_audio_cover.png',
+        playing: false,
+        filePath: recordResult.tempFilePath
+    };
+    
+    this.audioList.unshift(newAudio);
+},
+
+formatDuration(milliseconds) {
+    const seconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+},
+
+formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + 'B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + 'KB';
+    return (bytes / (1024 * 1024)).toFixed(2) + 'MB';
+},
+
 			closeUploadModal() {
 				this.showUploadModal = false;
 				this.uploadProgress = 0;
@@ -269,7 +396,6 @@ import UniIcons from '../../uni_modules/uni-icons/components/uni-icons/uni-icons
 							// 	break;
 							// case 2:
 							// 	this.startRecording('music');
-							// 	break;
 			// 			}
 			// 		}
 			// 	});
@@ -378,7 +504,7 @@ import UniIcons from '../../uni_modules/uni-icons/components/uni-icons/uni-icons
 		align-items: center;
 		padding: 30rpx;
 		background-color: white;
-		border-bottom: 1rpx solid #eee;
+		/* border-bottom: 1rpx solid #eee; */
 	}
 	
 	.header-title {
@@ -395,6 +521,7 @@ import UniIcons from '../../uni_modules/uni-icons/components/uni-icons/uni-icons
 	.upload-btn {
 		display: flex;
 		align-items: center;
+		justify-content: center;
 		background:  #9c7af0;
 		color: white;
 		border-radius: 25rpx;
@@ -565,16 +692,16 @@ import UniIcons from '../../uni_modules/uni-icons/components/uni-icons/uni-icons
 		transform: scale(0.95);
 	}
 	
-	.action-btn.download {
+	/* .action-btn.download {
 		background-color: #9c7af0;
 	}
 	
 	.action-btn.edit {
 		background-color: #9c7af0;
-	}
+	} */
 	
 	.action-btn.delete {
-		background-color: #9c7af0;
+		background-color: #f55050;
 	}
 	
 	.action-icon {

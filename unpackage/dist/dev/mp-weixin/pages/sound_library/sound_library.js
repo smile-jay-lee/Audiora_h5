@@ -79,19 +79,41 @@ const _sfc_main = {
   },
   methods: {
     loadAudioList() {
-      common_vendor.index.__f__("log", "at pages/sound_library/sound_library.vue:190", "加载音频列表");
+      common_vendor.index.__f__("log", "at pages/sound_library/sound_library.vue:191", "加载音频列表");
     },
     filterAudio(type) {
       this.currentFilter = type;
     },
     uploadAudio() {
-      common_vendor.index.chooseFile({
+      common_vendor.index.showActionSheet({
+        itemList: ["选择本地文件", "选择聊天窗口中的音频", "开始录制"],
+        success: (res) => {
+          switch (res.tapIndex) {
+            case 0:
+              this.chooseLocalFile();
+              break;
+            case 1:
+              this.chooseChatAudio();
+              break;
+            case 2:
+              this.startRecording();
+              break;
+          }
+        },
+        fail: (err) => {
+          common_vendor.index.__f__("log", "at pages/sound_library/sound_library.vue:216", "用户取消选择");
+        }
+      });
+    },
+    chooseLocalFile() {
+      common_vendor.index.chooseMedia({
         count: 5,
-        type: "custom",
-        extension: [".mp3", ".wav", ".m4a", ".aac", ".flac"],
+        mediaType: ["video", "audio"],
+        sourceType: ["album", "camera"],
+        // 从相册或拍摄
         success: (res) => {
           this.showUploadModal = true;
-          this.simulateUpload(res.tempFilePaths);
+          this.simulateUpload(res.tempFiles.map((file) => file.tempFilePath));
         },
         fail: (err) => {
           common_vendor.index.showToast({
@@ -101,40 +123,118 @@ const _sfc_main = {
         }
       });
     },
-    simulateUpload(files) {
-      this.uploadProgress = 0;
-      this.uploadStatus = "正在上传...";
-      const timer = setInterval(() => {
-        this.uploadProgress += 10;
-        if (this.uploadProgress >= 100) {
-          clearInterval(timer);
-          this.uploadStatus = "上传完成！";
-          setTimeout(() => {
-            this.closeUploadModal();
-            this.addNewAudio(files);
-          }, 1e3);
+    chooseChatAudio() {
+      common_vendor.index.showModal({
+        title: "选择聊天音频",
+        content: "即将跳转到聊天记录，选择音频文件",
+        success: (res) => {
+          if (res.confirm) {
+            common_vendor.index.navigateTo({
+              url: "/pages/chat/chat?selectMode=audio"
+            });
+          }
         }
-      }, 200);
+      });
     },
-    addNewAudio(files) {
-      files.forEach((file, index) => {
-        const newAudio = {
-          id: Date.now() + index,
-          title: `新音频文件${this.audioList.length + index + 1}`,
-          duration: "00:00",
-          size: "未知",
-          uploadDate: (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
-          type: "voice",
-          typeText: "人声",
-          cover: "/static/default_audio_cover.png",
-          playing: false
-        };
-        this.audioList.unshift(newAudio);
+    startRecording() {
+      common_vendor.index.showModal({
+        title: "开始录制",
+        content: "即将开始录制音频，请准备好麦克风",
+        success: (res) => {
+          if (res.confirm) {
+            this.startAudioRecording();
+          }
+        }
       });
-      common_vendor.index.showToast({
-        title: "上传成功",
-        icon: "success"
+    },
+    startAudioRecording() {
+      const recorderManager = common_vendor.index.getRecorderManager();
+      const options = {
+        duration: 6e4,
+        // 录音时长，单位 ms，最大值 600000（10分钟）
+        sampleRate: 16e3,
+        // 采样率
+        numberOfChannels: 1,
+        // 录音通道数
+        encodeBitRate: 96e3,
+        // 编码码率
+        format: "mp3",
+        // 音频格式
+        frameSize: 50
+        // 指定帧大小，单位 KB
+      };
+      recorderManager.start(options);
+      common_vendor.index.showLoading({
+        title: "录音中...",
+        mask: true
       });
+      recorderManager.onStart(() => {
+        common_vendor.index.__f__("log", "at pages/sound_library/sound_library.vue:297", "录音开始");
+        common_vendor.index.showToast({
+          title: "录音开始",
+          icon: "none"
+        });
+      });
+      recorderManager.onStop((res) => {
+        common_vendor.index.__f__("log", "at pages/sound_library/sound_library.vue:306", "录音结束", res);
+        common_vendor.index.hideLoading();
+        common_vendor.index.showModal({
+          title: "录音完成",
+          content: `录音时长: ${Math.floor(res.duration / 1e3)}秒
+文件大小: ${(res.fileSize / 1024).toFixed(2)}KB`,
+          confirmText: "保存",
+          cancelText: "重录",
+          success: (modalRes) => {
+            if (modalRes.confirm) {
+              this.saveRecordedAudio(res);
+            } else {
+              this.startAudioRecording();
+            }
+          }
+        });
+      });
+      recorderManager.onError((err) => {
+        common_vendor.index.__f__("error", "at pages/sound_library/sound_library.vue:329", "录音错误:", err);
+        common_vendor.index.hideLoading();
+        common_vendor.index.showToast({
+          title: "录音失败",
+          icon: "none"
+        });
+      });
+      setTimeout(() => {
+        recorderManager.stop();
+      }, 6e4);
+    },
+    saveRecordedAudio(recordResult) {
+      this.showUploadModal = true;
+      this.uploadStatus = "正在保存录音...";
+      this.simulateUpload([recordResult.tempFilePath]);
+      const newAudio = {
+        id: Date.now(),
+        title: `录音_${(/* @__PURE__ */ new Date()).toLocaleTimeString()}`,
+        duration: this.formatDuration(recordResult.duration),
+        size: this.formatFileSize(recordResult.fileSize),
+        uploadDate: (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
+        type: "voice",
+        typeText: "人声",
+        cover: "/static/default_audio_cover.png",
+        playing: false,
+        filePath: recordResult.tempFilePath
+      };
+      this.audioList.unshift(newAudio);
+    },
+    formatDuration(milliseconds) {
+      const seconds = Math.floor(milliseconds / 1e3);
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`;
+    },
+    formatFileSize(bytes) {
+      if (bytes < 1024)
+        return bytes + "B";
+      if (bytes < 1024 * 1024)
+        return (bytes / 1024).toFixed(2) + "KB";
+      return (bytes / (1024 * 1024)).toFixed(2) + "MB";
     },
     closeUploadModal() {
       this.showUploadModal = false;
@@ -153,7 +253,6 @@ const _sfc_main = {
     // 	break;
     // case 2:
     // 	this.startRecording('music');
-    // 	break;
     // 			}
     // 		}
     // 	});
@@ -240,13 +339,15 @@ const _sfc_main = {
 };
 if (!Array) {
   const _easycom_uni_icons2 = common_vendor.resolveComponent("uni-icons");
+  const _easycom_u_icon2 = common_vendor.resolveComponent("u-icon");
   const _easycom_uv_icon2 = common_vendor.resolveComponent("uv-icon");
-  (_easycom_uni_icons2 + _easycom_uv_icon2)();
+  (_easycom_uni_icons2 + _easycom_u_icon2 + _easycom_uv_icon2)();
 }
 const _easycom_uni_icons = () => "../../uni_modules/uni-icons/components/uni-icons/uni-icons.js";
+const _easycom_u_icon = () => "../../node-modules/@climblee/uv-ui/components/uv-icon/uv-icon.js";
 const _easycom_uv_icon = () => "../../uni_modules/uv-icon/components/uv-icon/uv-icon.js";
 if (!Math) {
-  (_easycom_uni_icons + _easycom_uv_icon)();
+  (_easycom_uni_icons + _easycom_u_icon + _easycom_uv_icon)();
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
@@ -255,20 +356,36 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       color: "#ffffff",
       size: "24"
     }),
-    b: common_vendor.o((...args) => $options.startRecording && $options.startRecording(...args)),
+    b: common_vendor.o((...args) => $options.uploadAudio && $options.uploadAudio(...args)),
     c: common_vendor.f($options.filteredAudioList, (audio, index, i0) => {
       return common_vendor.e({
         a: audio.cover,
         b: !audio.playing
-      }, !audio.playing ? {} : {}, {
-        c: common_vendor.o(($event) => $options.playAudio(audio), audio.id),
-        d: common_vendor.t(audio.title),
-        e: common_vendor.t(audio.duration),
-        f: common_vendor.t(audio.size),
-        g: common_vendor.t(audio.uploadDate),
-        h: "c8c0509f-1-" + i0,
-        i: common_vendor.o(($event) => $options.deleteAudio(audio, index), audio.id),
-        j: audio.id
+      }, !audio.playing ? {
+        c: common_vendor.o($options.playAudio, audio.id),
+        d: "c8c0509f-1-" + i0,
+        e: common_vendor.p({
+          name: "play-circle",
+          color: "#ffffff",
+          size: "40"
+        })
+      } : {
+        f: common_vendor.o(_ctx.pauseAudio, audio.id),
+        g: "c8c0509f-2-" + i0,
+        h: common_vendor.p({
+          name: "pause-circle",
+          color: "#ffffff",
+          size: "40"
+        })
+      }, {
+        i: common_vendor.o(($event) => $options.playAudio(audio), audio.id),
+        j: common_vendor.t(audio.title),
+        k: common_vendor.t(audio.duration),
+        l: common_vendor.t(audio.size),
+        m: common_vendor.t(audio.uploadDate),
+        n: "c8c0509f-3-" + i0,
+        o: common_vendor.o(($event) => $options.deleteAudio(audio, index), audio.id),
+        p: audio.id
       });
     }),
     d: common_vendor.p({
