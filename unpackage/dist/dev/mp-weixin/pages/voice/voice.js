@@ -181,9 +181,8 @@ const _sfc_main = {
 };
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return {
-    a: common_vendor.o((...args) => $options.refreshPage && $options.refreshPage(...args)),
-    b: common_vendor.o((...args) => $options.addVoice && $options.addVoice(...args)),
-    c: common_vendor.f($data.voiceList, (voice, index, i0) => {
+    a: common_vendor.o((...args) => $options.addVoice && $options.addVoice(...args)),
+    b: common_vendor.f($data.voiceList, (voice, index, i0) => {
       return {
         a: voice.avatar,
         b: common_vendor.t(voice.name),

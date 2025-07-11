@@ -123,6 +123,25 @@ const _sfc_main = {
         }
       });
     },
+    // 添加缺失的 simulateUpload 方法
+    simulateUpload(filePaths) {
+      this.uploadProgress = 0;
+      this.uploadStatus = "正在上传...";
+      const interval = setInterval(() => {
+        this.uploadProgress += 10;
+        if (this.uploadProgress >= 100) {
+          clearInterval(interval);
+          this.uploadStatus = "上传完成！";
+          setTimeout(() => {
+            this.closeUploadModal();
+            common_vendor.index.showToast({
+              title: "上传成功",
+              icon: "success"
+            });
+          }, 2e3);
+        }
+      }, 300);
+    },
     chooseChatAudio() {
       common_vendor.index.showModal({
         title: "选择聊天音频",
@@ -169,14 +188,14 @@ const _sfc_main = {
         mask: true
       });
       recorderManager.onStart(() => {
-        common_vendor.index.__f__("log", "at pages/sound_library/sound_library.vue:297", "录音开始");
+        common_vendor.index.__f__("log", "at pages/sound_library/sound_library.vue:322", "录音开始");
         common_vendor.index.showToast({
           title: "录音开始",
           icon: "none"
         });
       });
       recorderManager.onStop((res) => {
-        common_vendor.index.__f__("log", "at pages/sound_library/sound_library.vue:306", "录音结束", res);
+        common_vendor.index.__f__("log", "at pages/sound_library/sound_library.vue:331", "录音结束", res);
         common_vendor.index.hideLoading();
         common_vendor.index.showModal({
           title: "录音完成",
@@ -194,7 +213,7 @@ const _sfc_main = {
         });
       });
       recorderManager.onError((err) => {
-        common_vendor.index.__f__("error", "at pages/sound_library/sound_library.vue:329", "录音错误:", err);
+        common_vendor.index.__f__("error", "at pages/sound_library/sound_library.vue:354", "录音错误:", err);
         common_vendor.index.hideLoading();
         common_vendor.index.showToast({
           title: "录音失败",

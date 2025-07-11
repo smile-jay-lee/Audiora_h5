@@ -238,6 +238,29 @@ chooseLocalFile() {
     });
 },
 
+  // 添加缺失的 simulateUpload 方法
+        simulateUpload(filePaths) {
+            this.uploadProgress = 0;
+            this.uploadStatus = '正在上传...';
+            
+            const interval = setInterval(() => {
+                this.uploadProgress += 10;
+                
+                if (this.uploadProgress >= 100) {
+                    clearInterval(interval);
+                    this.uploadStatus = '上传完成！';
+                    
+                    setTimeout(() => {
+                        this.closeUploadModal();
+                        uni.showToast({
+                            title: '上传成功',
+                            icon: 'success'
+                        });
+                    }, 2000);
+                }
+            }, 300);
+        },
+
 chooseChatAudio() {
     // 这里可以跳转到聊天记录页面或者显示聊天记录中的音频列表
     uni.showModal({
@@ -268,6 +291,8 @@ startRecording() {
         }
     });
 },
+
+
 
 startAudioRecording() {
     // 获取录音管理器

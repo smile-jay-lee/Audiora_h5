@@ -65,7 +65,7 @@
 	],
 
 		"globalStyle": {
-		"navigationBarTextStyle": "black",
+		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "Audiora",
 		"navigationBarBackgroundColor": "#6200EA",
 		"backgroundColor": "#F5F5F5"

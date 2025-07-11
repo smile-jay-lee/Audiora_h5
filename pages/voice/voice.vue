@@ -3,10 +3,10 @@
         <!-- 页面标题 -->
         <view class="page-header">
             <view class="header-title">声音克隆</view>
-            <view class="refresh-btn" @click="refreshPage">
+            <!-- <view class="refresh-btn" @click="refreshPage">
                 <text class="refresh-icon">🔄</text>
                 <text class="refresh-text">刷新</text>
-            </view>
+            </view> -->
         </view>
         
         <!-- 我的声音 -->
