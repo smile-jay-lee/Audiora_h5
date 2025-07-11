@@ -86,7 +86,8 @@
 							 <uni-icons type="download" size="24"></uni-icons>
 						</view>
 						<view class="action-delete" @click="deleteVideo">
-							<text class="action-icon">🗑️</text>
+							<!-- <text class="action-icon">🗑️</text> -->
+							<uni-icons type="trash" size="24"></uni-icons>
 						</view>
 					</view>
 				</view>

@@ -5,17 +5,17 @@
 			<view class="header-title">音频库</view>
 			<view class="header-actions">
 				<view class="upload-btn" @click="startRecording">
-					<text class="upload-icon">📤</text>
-					<text class="upload-text">上传</text>
+                    <text class="upload-text">上传</text>
+					<uni-icons type="cloud-upload" color="#ffffff" size="24"></uni-icons>
 				</view>
 			</view>
 		</view>
 		
 		<!-- 筛选栏 -->
 		<view class="filter-bar">
-			<view class="filter-item" :class="{active: currentFilter === 'all'}" @click="filterAudio('all')">
+			<!-- <view class="filter-item" :class="{active: currentFilter === 'all'}" @click="filterAudio('all')">
 				<text class="filter-text">全部</text>
-			</view>
+			</view> -->
 			<!-- <view class="filter-item" :class="{active: currentFilter === 'voice'}" @click="filterAudio('voice')">
 				<text class="filter-text">人声</text>
 			</view>
@@ -50,14 +50,15 @@
 				</view>
 				
 				<view class="audio-actions">
-					<view class="action-btn download" @click="downloadAudio(audio)">
-						<text class="action-icon">💾</text>
+					<!-- <view class="action-btn download" @click="downloadAudio(audio)">
+					   <uv-icon name="arrow-downward" color="#ffffff"></uv-icon>
 					</view>
 					<view class="action-btn edit" @click="editAudio(audio)">
-						<text class="action-icon">✏️</text>
-					</view>
+						<uv-icon name="edit-pen" color="#ffffff"></uv-icon>
+					</view> -->
 					<view class="action-btn delete" @click="deleteAudio(audio, index)">
-						<text class="action-icon">🗑️</text>
+						<!-- <text class="action-icon">🗑️</text> -->
+                         <uv-icon name="trash" color="#ffffff"></uv-icon>
 					</view>
 				</view>
 			</view>
@@ -103,6 +104,9 @@
 </template>
 
 <script>
+
+import UniIcons from '../../uni_modules/uni-icons/components/uni-icons/uni-icons.vue';
+
 	export default {
 		data() {
 			return {
@@ -391,7 +395,7 @@
 	.upload-btn {
 		display: flex;
 		align-items: center;
-		background: linear-gradient(135deg, #6200EA, #9C27B0);
+		background:  #9c7af0;
 		color: white;
 		border-radius: 25rpx;
 		padding: 15rpx 25rpx;
@@ -423,7 +427,7 @@
 	}
 	
 	.filter-item.active {
-		background-color: #6200EA;
+		background-color: #9c7af0;
 	}
 	
 	.filter-item.active .filter-text {
@@ -496,7 +500,7 @@
 	
 	.audio-title {
 		display: block;
-		font-size: 32rpx;
+		font-size: 30rpx;
 		font-weight: bold;
 		color: #333;
 		margin-bottom: 10rpx;
@@ -504,7 +508,7 @@
 	
 	.audio-subtitle {
 		display: block;
-		font-size: 26rpx;
+		font-size: 24rpx;
 		color: #666;
 		margin-bottom: 8rpx;
 	}
@@ -562,15 +566,15 @@
 	}
 	
 	.action-btn.download {
-		background-color: #4CAF50;
+		background-color: #9c7af0;
 	}
 	
 	.action-btn.edit {
-		background-color: #FF9800;
+		background-color: #9c7af0;
 	}
 	
 	.action-btn.delete {
-		background-color: #F44336;
+		background-color: #9c7af0;
 	}
 	
 	.action-icon {

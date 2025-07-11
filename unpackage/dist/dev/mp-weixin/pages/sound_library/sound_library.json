@@ -1,4 +1,7 @@
 {
   "navigationBarTitleText": "音库",
-  "usingComponents": {}
+  "usingComponents": {
+    "uni-icons": "../../uni_modules/uni-icons/components/uni-icons/uni-icons",
+    "uv-icon": "../../uni_modules/uv-icon/components/uv-icon/uv-icon"
+  }
 }

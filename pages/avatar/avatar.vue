@@ -30,7 +30,8 @@
                         </view>
                         <view class="avatar-actions">
                             <view class="action-delete" @click="deleteAvatar(index)">
-                                <text class="action-icon">🗑️</text>
+                                <!-- <text class="action-icon">🗑️</text> -->
+                                 <uni-icons type="trash" size="24"></uni-icons>
                             </view>
                         </view>
                     </view>

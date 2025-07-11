@@ -13,14 +13,14 @@ const _sfc_main = {
     };
   },
   onLoad() {
-    common_vendor.index.__f__("log", "at pages/index/index.vue:117", "页面加载完成");
+    common_vendor.index.__f__("log", "at pages/index/index.vue:118", "页面加载完成");
   },
   methods: {
     onImageError(e) {
-      common_vendor.index.__f__("error", "at pages/index/index.vue:121", "图片加载失败:", e);
+      common_vendor.index.__f__("error", "at pages/index/index.vue:122", "图片加载失败:", e);
     },
     onImageLoad(e) {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:124", "图片加载成功:", e);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:125", "图片加载成功:", e);
     },
     goToFunction(type) {
     },
@@ -118,7 +118,11 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
       size: "24"
     }),
     i: common_vendor.o((...args) => $options.downloadVideo && $options.downloadVideo(...args)),
-    j: common_vendor.o((...args) => $options.deleteVideo && $options.deleteVideo(...args))
+    j: common_vendor.p({
+      type: "trash",
+      size: "24"
+    }),
+    k: common_vendor.o((...args) => $options.deleteVideo && $options.deleteVideo(...args))
   };
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-1cf27b2a"]]);

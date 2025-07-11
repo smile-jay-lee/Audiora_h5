@@ -79,7 +79,7 @@ const _sfc_main = {
   },
   methods: {
     loadAudioList() {
-      common_vendor.index.__f__("log", "at pages/sound_library/sound_library.vue:186", "加载音频列表");
+      common_vendor.index.__f__("log", "at pages/sound_library/sound_library.vue:190", "加载音频列表");
     },
     filterAudio(type) {
       this.currentFilter = type;
@@ -238,12 +238,25 @@ const _sfc_main = {
     }
   }
 };
+if (!Array) {
+  const _easycom_uni_icons2 = common_vendor.resolveComponent("uni-icons");
+  const _easycom_uv_icon2 = common_vendor.resolveComponent("uv-icon");
+  (_easycom_uni_icons2 + _easycom_uv_icon2)();
+}
+const _easycom_uni_icons = () => "../../uni_modules/uni-icons/components/uni-icons/uni-icons.js";
+const _easycom_uv_icon = () => "../../uni_modules/uv-icon/components/uv-icon/uv-icon.js";
+if (!Math) {
+  (_easycom_uni_icons + _easycom_uv_icon)();
+}
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
-    a: common_vendor.o((...args) => $options.startRecording && $options.startRecording(...args)),
-    b: $data.currentFilter === "all" ? 1 : "",
-    c: common_vendor.o(($event) => $options.filterAudio("all")),
-    d: common_vendor.f($options.filteredAudioList, (audio, index, i0) => {
+    a: common_vendor.p({
+      type: "cloud-upload",
+      color: "#ffffff",
+      size: "24"
+    }),
+    b: common_vendor.o((...args) => $options.startRecording && $options.startRecording(...args)),
+    c: common_vendor.f($options.filteredAudioList, (audio, index, i0) => {
       return common_vendor.e({
         a: audio.cover,
         b: !audio.playing
@@ -253,11 +266,14 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         e: common_vendor.t(audio.duration),
         f: common_vendor.t(audio.size),
         g: common_vendor.t(audio.uploadDate),
-        h: common_vendor.o(($event) => $options.downloadAudio(audio), audio.id),
-        i: common_vendor.o(($event) => $options.editAudio(audio), audio.id),
-        j: common_vendor.o(($event) => $options.deleteAudio(audio, index), audio.id),
-        k: audio.id
+        h: "c8c0509f-1-" + i0,
+        i: common_vendor.o(($event) => $options.deleteAudio(audio, index), audio.id),
+        j: audio.id
       });
+    }),
+    d: common_vendor.p({
+      name: "trash",
+      color: "#ffffff"
     }),
     e: $options.filteredAudioList.length === 0
   }, $options.filteredAudioList.length === 0 ? {

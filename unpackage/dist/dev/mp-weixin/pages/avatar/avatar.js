@@ -55,7 +55,7 @@ const _sfc_main = {
   },
   methods: {
     loadAvatarList() {
-      common_vendor.index.__f__("log", "at pages/avatar/avatar.vue:110", "加载形象列表");
+      common_vendor.index.__f__("log", "at pages/avatar/avatar.vue:111", "加载形象列表");
     },
     playAvatar(avatar) {
       common_vendor.index.showToast({
@@ -85,7 +85,7 @@ const _sfc_main = {
       this.showUpload = false;
     },
     handleUploadSuccess(data) {
-      common_vendor.index.__f__("log", "at pages/avatar/avatar.vue:140", "形象上传成功:", data);
+      common_vendor.index.__f__("log", "at pages/avatar/avatar.vue:141", "形象上传成功:", data);
       const newAvatar = {
         id: Date.now(),
         image: data.url,
@@ -111,7 +111,12 @@ const _sfc_main = {
 };
 if (!Array) {
   const _component_upload_component = common_vendor.resolveComponent("upload-component");
-  _component_upload_component();
+  const _easycom_uni_icons2 = common_vendor.resolveComponent("uni-icons");
+  (_component_upload_component + _easycom_uni_icons2)();
+}
+const _easycom_uni_icons = () => "../../uni_modules/uni-icons/components/uni-icons/uni-icons.js";
+if (!Math) {
+  _easycom_uni_icons();
 }
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return common_vendor.e({
@@ -130,12 +135,17 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         a: avatar.image,
         b: common_vendor.o(($event) => $options.playAvatar(avatar), index),
         c: common_vendor.t(index + 1),
-        d: common_vendor.o(($event) => $options.deleteAvatar(index), index),
-        e: common_vendor.t(avatar.createTime),
-        f: index
+        d: "e7391881-1-" + i0,
+        e: common_vendor.o(($event) => $options.deleteAvatar(index), index),
+        f: common_vendor.t(avatar.createTime),
+        g: index
       };
     }),
-    f: common_vendor.o((...args) => $options.createAvatar && $options.createAvatar(...args))
+    f: common_vendor.p({
+      type: "trash",
+      size: "24"
+    }),
+    g: common_vendor.o((...args) => $options.createAvatar && $options.createAvatar(...args))
   });
 }
 const MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-e7391881"]]);
