@@ -302,16 +302,17 @@
 						title: '已退出登录',
 						icon: 'success'
 					});
-					
+
 					// 模拟跳转到登录页面
-					// uni.reLaunch({
-					//     url: '/pages/login/login'
-					// });
+					uni.reLaunch({
+					  url: '/pages/login/login'
+					});
 				}, 1500);
 			},
 			gotoavatar() {
 				Navigation.goToAvatar();
 			}
+
 		}
 	}
 </script>

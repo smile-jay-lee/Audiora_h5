@@ -8,7 +8,8 @@
     "pages/voice/voice",
     "pages/sound_library/sound_library",
     "pages/create/create",
-    "pages/upload/upload"
+    "pages/upload/upload",
+    "pages/login/login"
   ],
   "window": {
     "navigationBarTextStyle": "white",

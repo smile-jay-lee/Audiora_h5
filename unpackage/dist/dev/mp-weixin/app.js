@@ -11,6 +11,7 @@ if (!Math) {
   "./pages/sound_library/sound_library.js";
   "./pages/create/create.js";
   "./pages/upload/upload.js";
+  "./pages/login/login.js";
 }
 const _sfc_main = {
   onLaunch: function() {

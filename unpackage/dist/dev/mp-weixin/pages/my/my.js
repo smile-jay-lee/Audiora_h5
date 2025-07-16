@@ -150,6 +150,9 @@ Audiora是一款专业的音频播放应用，为您提供优质的听觉体验�
           title: "已退出登录",
           icon: "success"
         });
+        common_vendor.index.reLaunch({
+          url: "/pages/login/login"
+        });
       }, 1500);
     },
     gotoavatar() {

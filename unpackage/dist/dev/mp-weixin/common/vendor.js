@@ -2672,11 +2672,15 @@ const getPublicInstance = (i) => {
     return getExposeProxy(i) || i.proxy;
   return getPublicInstance(i.parent);
 };
+function getComponentInternalInstance(i) {
+  return i;
+}
 const publicPropertiesMap = (
   // Move PURE marker to new line to workaround compiler discarding it
   // due to type annotation
   /* @__PURE__ */ extend(/* @__PURE__ */ Object.create(null), {
-    $: (i) => i,
+    // fixed by xxxxxx
+    $: getComponentInternalInstance,
     // fixed by xxxxxx vue-i18n 在 dev 模式，访问了 $el，故模拟一个假的
     // $el: i => i.vnode.el,
     $el: (i) => i.__$el || (i.__$el = {}),
@@ -4547,6 +4551,7 @@ function warnRef(ref2) {
 const queuePostRenderEffect = queuePostFlushCb;
 function mountComponent(initialVNode, options) {
   const instance = initialVNode.component = createComponentInstance(initialVNode, options.parentComponent, null);
+  instance.renderer = options.mpType ? options.mpType : "component";
   {
     instance.ctx.$onApplyOptions = onApplyOptions;
     instance.ctx.$children = [];
@@ -4885,7 +4890,8 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
 }
 function initHooks$1(options, instance, publicThis) {
   const mpType = options.mpType || publicThis.$mpType;
-  if (!mpType || mpType === "component") {
+  if (!mpType || mpType === "component" || // instance.renderer 标识页面是否作为组件渲染
+  mpType === "page" && instance.renderer === "component") {
     return;
   }
   Object.keys(options).forEach((name) => {
@@ -5541,10 +5547,10 @@ function handlePromise(promise2) {
 function promisify$1(name, fn) {
   return (args = {}, ...rest) => {
     if (hasCallback(args)) {
-      return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
+      return wrapperReturnValue(name, invokeApi(name, fn, extend({}, args), rest));
     }
     return wrapperReturnValue(name, handlePromise(new Promise((resolve2, reject) => {
-      invokeApi(name, fn, extend(args, { success: resolve2, fail: reject }), rest);
+      invokeApi(name, fn, extend({}, args, { success: resolve2, fail: reject }), rest);
     })));
   };
 }
@@ -5941,7 +5947,7 @@ function promisify(name, api) {
   }
   return function promiseApi(options = {}, ...rest) {
     if (isFunction(options.success) || isFunction(options.fail) || isFunction(options.complete)) {
-      return wrapperReturnValue(name, invokeApi(name, api, options, rest));
+      return wrapperReturnValue(name, invokeApi(name, api, extend({}, options), rest));
     }
     return wrapperReturnValue(name, handlePromise(new Promise((resolve2, reject) => {
       invokeApi(name, api, extend({}, options, {
@@ -6108,7 +6114,7 @@ function getOSInfo(system, platform2) {
     osName = system.split(" ")[0] || platform2;
     osVersion = system.split(" ")[1] || "";
   }
-  osName = osName.toLocaleLowerCase();
+  osName = osName.toLowerCase();
   switch (osName) {
     case "harmony":
     case "ohos":
@@ -6148,9 +6154,9 @@ function populateParameters(fromRes, toRes) {
     appVersion: "1.0.0",
     appVersionCode: "100",
     appLanguage: getAppLanguage(hostLanguage),
-    uniCompileVersion: "4.66",
-    uniCompilerVersion: "4.66",
-    uniRuntimeVersion: "4.66",
+    uniCompileVersion: "4.75",
+    uniCompilerVersion: "4.75",
+    uniRuntimeVersion: "4.75",
     uniPlatform: "mp-weixin",
     deviceBrand,
     deviceModel: model,
@@ -6187,7 +6193,7 @@ function getGetDeviceType(fromRes, model) {
       mac: "pc"
     };
     const deviceTypeMapsKeys = Object.keys(deviceTypeMaps);
-    const _model = model.toLocaleLowerCase();
+    const _model = model.toLowerCase();
     for (let index2 = 0; index2 < deviceTypeMapsKeys.length; index2++) {
       const _m2 = deviceTypeMapsKeys[index2];
       if (_model.indexOf(_m2) !== -1) {
@@ -6201,7 +6207,7 @@ function getGetDeviceType(fromRes, model) {
 function getDeviceBrand(brand) {
   let deviceBrand = brand;
   if (deviceBrand) {
-    deviceBrand = deviceBrand.toLocaleLowerCase();
+    deviceBrand = deviceBrand.toLowerCase();
   }
   return deviceBrand;
 }
@@ -6299,9 +6305,9 @@ const getAppBaseInfo = {
       appLanguage: getAppLanguage(hostLanguage),
       isUniAppX: false,
       uniPlatform: "mp-weixin",
-      uniCompileVersion: "4.66",
-      uniCompilerVersion: "4.66",
-      uniRuntimeVersion: "4.66"
+      uniCompileVersion: "4.75",
+      uniCompilerVersion: "4.75",
+      uniRuntimeVersion: "4.75"
     };
     extend(toRes, parameters);
   }
@@ -6974,14 +6980,14 @@ const atFileRegex = /^\s*at\s+[\w/./-]+:\d+$/;
 function rewriteConsole() {
   function wrapConsole(type) {
     return function(...args) {
-      const originalArgs = [...args];
-      if (originalArgs.length) {
-        const maybeAtFile = originalArgs[originalArgs.length - 1];
-        if (typeof maybeAtFile === "string" && atFileRegex.test(maybeAtFile)) {
-          originalArgs.pop();
-        }
-      }
       {
+        const originalArgs = [...args];
+        if (originalArgs.length) {
+          const maybeAtFile = originalArgs[originalArgs.length - 1];
+          if (typeof maybeAtFile === "string" && atFileRegex.test(maybeAtFile)) {
+            originalArgs.pop();
+          }
+        }
         originalConsole[type](...originalArgs);
       }
       if (type === "error" && args.length === 1) {
@@ -7041,9 +7047,9 @@ function isConsoleWritable() {
   return isWritable;
 }
 function initRuntimeSocketService() {
-  const hosts = "192.168.56.1,192.168.137.1,192.168.81.1,192.168.110.37,127.0.0.1";
+  const hosts = "192.168.56.1,192.168.137.1,192.168.81.1,192.168.21.186,127.0.0.1";
   const port = "8090";
-  const id = "mp-weixin_m9lUWv";
+  const id = "mp-weixin_NN8Mbo";
   const lazy = typeof swan !== "undefined";
   let restoreError = lazy ? () => {
   } : initOnError();

@@ -61,6 +61,12 @@
 			"style": {
 				"navigationBarTitleText": "上传"
 			}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
 		}
 	],
 
