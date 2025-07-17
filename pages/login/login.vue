@@ -23,8 +23,8 @@ import { request } from '@/utils/request.js';
 export default {
   data() {
     return {
-      username: '小叶',
-      password: '123',
+      username: '',
+      password: '',
       showPwd: false
     }
   },
@@ -37,7 +37,7 @@ export default {
       // 登录逻辑
       uni.showToast({ title: '登录中...' })
       try {
-        const url = `/api/user/login?username=${encodeURIComponent(this.username)}&password=${encodeURIComponent(this.password)}`;  const res = uni.request({
+        const url = `/api/user/login?username=${encodeURIComponent(this.username)}&password=${encodeURIComponent(this.password)}`;  const res = await request({
           url: url,
           method: 'POST'
         })

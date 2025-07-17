@@ -1,1 +1,1 @@
-{"version":3,"file":"request.js","sources":[],"sourcesContent":[],"names":[],"mappings":";;"}
+{"version":3,"file":"request.js","sources":["utils/request.js"],"sourcesContent":["import { BASE_URL } from './config.js';\r\n\r\nexport function request(options) {\r\n  options.url = BASE_URL + options.url;\r\n  return uni.request(options);\r\n}"],"names":["BASE_URL","uni"],"mappings":";;;AAEO,SAAS,QAAQ,SAAS;AAC/B,UAAQ,MAAMA,wBAAW,QAAQ;AACjC,SAAOC,cAAG,MAAC,QAAQ,OAAO;AAC5B;;"}
