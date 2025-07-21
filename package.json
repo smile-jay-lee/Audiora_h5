@@ -1,5 +1,7 @@
 {
   "dependencies": {
-    "@climblee/uv-ui": "^1.1.20"
+    "@climblee/uv-ui": "^1.1.20",
+    "@dcloudio/uni-ui": "^1.5.8",
+    "vue": "^3.5.17"
   }
 }

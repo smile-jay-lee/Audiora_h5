@@ -1,0 +1,5 @@
+{
+    "vuecompilerOptions": {
+        "globalTypesPaths": "./vue-global-types.d.ts"
+    }
+}

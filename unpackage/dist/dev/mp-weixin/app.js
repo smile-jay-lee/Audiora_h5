@@ -12,6 +12,7 @@ if (!Math) {
   "./pages/create/create.js";
   "./pages/upload/upload.js";
   "./pages/login/login.js";
+  "./pages/reset/reset.js";
 }
 const _sfc_main = {
   onLaunch: function() {

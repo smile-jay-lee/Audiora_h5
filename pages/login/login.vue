@@ -45,7 +45,14 @@ export default {
         uni.hideLoading()
         if (res.data && res.data.code === "200") {
           uni.showToast({ title: '登录成功', icon: 'success' })
-          // 登录成功后的处理
+          uni.setStorageSync('userId', res.data.data.userId)
+
+          //停在这个界面很久
+          // uni.showToast({ title: `登录成功，用户ID：${res.data.userId}`, icon: 'success', duration: 200000 })
+          // console.log('登录成功，用户ID：', res.data)
+          // await new Promise(resolve => setTimeout(resolve, 20000000))
+
+           // 登录成功后的处理
           uni.reLaunch({
             url: '/pages/index/index'
           })

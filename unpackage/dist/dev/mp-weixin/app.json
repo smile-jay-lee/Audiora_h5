@@ -9,7 +9,8 @@
     "pages/sound_library/sound_library",
     "pages/create/create",
     "pages/upload/upload",
-    "pages/login/login"
+    "pages/login/login",
+    "pages/reset/reset"
   ],
   "window": {
     "navigationBarTextStyle": "white",

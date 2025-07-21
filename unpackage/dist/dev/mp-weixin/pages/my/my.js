@@ -157,6 +157,9 @@ Audiora是一款专业的音频播放应用，为您提供优质的听觉体验�
     },
     gotoavatar() {
       utils_navigation.Navigation.goToAvatar();
+    },
+    gotoreset() {
+      utils_navigation.Navigation.gotoreset();
     }
   }
 };
@@ -172,7 +175,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     h: common_vendor.o((...args) => $options.goToSubscriptions && $options.goToSubscriptions(...args)),
     i: common_vendor.o((...args) => $options.goToSubscriptions && $options.goToSubscriptions(...args)),
     j: common_vendor.o((...args) => $options.goToSubscriptions && $options.goToSubscriptions(...args)),
-    k: common_vendor.o((...args) => $options.goToSubscriptions && $options.goToSubscriptions(...args)),
+    k: common_vendor.o((...args) => $options.gotoreset && $options.gotoreset(...args)),
     l: common_vendor.o((...args) => $options.showLogoutConfirm && $options.showLogoutConfirm(...args)),
     m: $data.showLogoutModal
   }, $data.showLogoutModal ? {

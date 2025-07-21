@@ -29,6 +29,11 @@ const Navigation = {
     common_vendor.index.navigateTo({
       url: "/pages/create/create"
     });
+  },
+  gotoreset() {
+    common_vendor.index.navigateTo({
+      url: "/pages/reset/reset"
+    });
   }
 };
 exports.Navigation = Navigation;

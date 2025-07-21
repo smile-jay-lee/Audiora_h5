@@ -31,5 +31,10 @@ export default {
         uni.navigateTo({
             url: '/pages/create/create'
         });
+    },
+    gotoreset() {
+        uni.navigateTo({
+            url: '/pages/reset/reset'
+        });
     }
 }

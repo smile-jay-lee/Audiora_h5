@@ -3,11 +3,18 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/my/my",
-          "pathName": "pages/my/my",
+          "name": "pages/reset/reset",
+          "pathName": "pages/reset/reset",
           "query": "",
           "scene": null,
           "launchMode": "default"
+        },
+        {
+          "name": "pages/my/my",
+          "pathName": "pages/my/my",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "pages/login/login",

@@ -54,7 +54,7 @@
 				<text class="action-text">使用教程</text>
 				<text class="action-arrow">></text>
 			</view>
-			<view class="action-item" @click="goToSubscriptions">
+			<view class="action-item" @click="gotoreset">
 				<view class="action-icon">🔒</view>
 				<text class="action-text">修改密码</text>
 				<text class="action-arrow">></text>
@@ -128,7 +128,7 @@
 				<text class="setting-arrow">></text>
 			</view>
 		</view>
-		
+
 		<!-- 退出登录 -->
 		<view class="logout-section">
 			<view class="logout-btn" @click="showLogoutConfirm">
@@ -311,6 +311,9 @@
 			},
 			gotoavatar() {
 				Navigation.goToAvatar();
+			},
+			gotoreset() {
+				Navigation.gotoreset();
 			}
 
 		}

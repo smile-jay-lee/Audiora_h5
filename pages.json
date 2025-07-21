@@ -67,6 +67,12 @@
 			"style": {
 				"navigationBarTitleText": "登录"
 			}
+		},
+		{
+			"path": "pages/reset/reset",
+			"style": {
+				"navigationBarTitleText": "修改密码"
+			}
 		}
 	],
 

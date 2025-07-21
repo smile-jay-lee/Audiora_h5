@@ -1,13 +1,13 @@
 {
-  "hash": "1a021c58",
-  "configHash": "655c1859",
-  "lockfileHash": "5f0c7117",
-  "browserHash": "c227ef1c",
+  "hash": "cde3dade",
+  "configHash": "d0e02604",
+  "lockfileHash": "ee5865c5",
+  "browserHash": "5af219b5",
   "optimized": {
     "@climblee/uv-ui": {
       "src": "../../../../../node_modules/@climblee/uv-ui/index.js",
       "file": "@climblee_uv-ui.js",
-      "fileHash": "e177a024",
+      "fileHash": "526c80cc",
       "needsInterop": false
     }
   },

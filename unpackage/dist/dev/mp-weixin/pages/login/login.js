@@ -25,6 +25,7 @@ const _sfc_main = {
         common_vendor.index.hideLoading();
         if (res.data && res.data.code === "200") {
           common_vendor.index.showToast({ title: "登录成功", icon: "success" });
+          common_vendor.index.setStorageSync("userId", res.data.data.userId);
           common_vendor.index.reLaunch({
             url: "/pages/index/index"
           });
